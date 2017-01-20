@@ -10,4 +10,8 @@
     <string name="error_required">This field is required</string>
     <string name="error_no_connection">No connection</string>
 
+    <!-- Default News Strings -->
+    <string name="default_news_title">This is a Simple News Title</string>
+    <string name="default_author">Corey Caplan</string>
+
 </resources>
