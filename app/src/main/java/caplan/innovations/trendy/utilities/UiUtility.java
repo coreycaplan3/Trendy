@@ -12,8 +12,8 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
-import leavitt.innovations.thebuzz.R;
-import leavitt.innovations.thebuzz.application.BuzzApplication;
+import caplan.innovations.trendy.R;
+import caplan.innovations.trendy.application.TrendyApplication;
 
 /**
  * Created by Corey on 10/5/2015.
@@ -73,7 +73,7 @@ final public class UiUtility {
         if (sScreenHeight != -1) {
             return sScreenHeight;
         } else {
-            WindowManager windowManager = (WindowManager) BuzzApplication.context()
+            WindowManager windowManager = (WindowManager) TrendyApplication.context()
                     .getSystemService(Context.WINDOW_SERVICE);
             Display display = windowManager.getDefaultDisplay();
             Point size = new Point();
@@ -87,7 +87,7 @@ final public class UiUtility {
         if (sScreenWidth != -1) {
             return sScreenWidth;
         } else {
-            WindowManager windowManager = (WindowManager) BuzzApplication.context()
+            WindowManager windowManager = (WindowManager) TrendyApplication.context()
                     .getSystemService(Context.WINDOW_SERVICE);
             Display display = windowManager.getDefaultDisplay();
             Point size = new Point();

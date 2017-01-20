@@ -1,7 +1,13 @@
 <resources>
     <string name="app_name">Trendy</string>
 
+    <!-- Verbs -->
+    <string name="retry">Retry</string>
+
+    <!-- Error States -->
     <string name="error_too_short">This field is too short</string>
     <string name="error_too_long">This field is too long</string>
     <string name="error_required">This field is required</string>
+    <string name="error_no_connection">No connection</string>
+
 </resources>

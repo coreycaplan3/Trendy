@@ -1,7 +1,6 @@
-package caplan.innovations.trendy;
+package caplan.innovations.trendy.activities;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
@@ -35,8 +34,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     @BindView(R.id.appbar)
     AppBarLayout mAppBarLayout;
 
-    static final String KEY_PROGRESS_SHOWING = "PROGRESS_SHOWING";
-    static final String KEY_PROGRESS_TEXT = "PROGRESS_TEXT";
+    private static final String KEY_PROGRESS_SHOWING = "PROGRESS_SHOWING";
+    private static final String KEY_PROGRESS_TEXT = "PROGRESS_TEXT";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,14 +64,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         // Setup the views for the activity
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
-
-        ActionBar actionBar = getSupportActionBar();
-//        if (actionBar != null && !(this instanceof MainActivity)) {
-//            // Only show the back button if we are NOT in the Main Activity
-//            actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
-//            actionBar.setDisplayShowHomeEnabled(true);
-//            actionBar.setDisplayHomeAsUpEnabled(true);
-//        }
     }
 
     @Override
@@ -106,14 +97,15 @@ public abstract class BaseActivity extends AppCompatActivity {
     /**
      * @param title The title that should be set on the {@link ActionBar}.
      */
+    @SuppressWarnings({"unused", "ConstantConditions"})
     protected final void updateTitle(@StringRes int title) {
-        //noinspection ConstantConditions
         getSupportActionBar().setTitle(title);
     }
 
     /**
      * Disables scroll flags on the {@link AppBarLayout}.
      */
+    @SuppressWarnings("unused")
     protected final void disableScrollFlags() {
         if (mAppBarLayout != null) {
             for (int i = 0; i < mAppBarLayout.getChildCount(); i++) {
@@ -148,17 +140,12 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @return The root view of this activity after doing a {@code findViewById} on
      * {@link R.id#activity_container}
      */
+    @SuppressWarnings("unused")
     public final View getRootView() {
         return ButterKnife.findById(this, R.id.activity_container);
     }
 
     private boolean isProgressShowing = false;
-
-//    MARK - Getters for testing
-
-    public String getProgressMessage() {
-        return mProgressMessage;
-    }
 
     @Override
     protected void onStop() {

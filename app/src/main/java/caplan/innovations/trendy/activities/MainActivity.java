@@ -1,8 +1,10 @@
-package caplan.innovations.trendy;
+package caplan.innovations.trendy.activities;
 
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+
+import caplan.innovations.trendy.R;
 
 /**
  * Created by Corey on 1/19/2017.
