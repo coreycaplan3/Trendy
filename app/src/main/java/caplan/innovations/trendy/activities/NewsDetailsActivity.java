@@ -69,19 +69,15 @@ public class NewsDetailsActivity extends BaseActivity {
             mNewsItem = getIntent().getParcelableExtra(KEY_NEWS);
         }
 
-        // Setup the ActionBar
-        setSupportActionBar(mToolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
-        } else {
-            Log.e(TAG, "onCreate: ", new NullPointerException("SupportActionBar is null!"));
-        }
-
+        setupBackButton();
         // Register links so they are clickable
         mNewsUrlTextView.setMovementMethod(LinkMovementMethod.getInstance());
         bindNewsItem();
+    }
+
+    @Override
+    int getContentView() {
+        return R.layout.activity_news_details;
     }
 
     @SuppressWarnings("deprecation")
@@ -116,8 +112,9 @@ public class NewsDetailsActivity extends BaseActivity {
     }
 
     @Override
-    int getContentView() {
-        return R.layout.activity_news_details;
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 
     @Override

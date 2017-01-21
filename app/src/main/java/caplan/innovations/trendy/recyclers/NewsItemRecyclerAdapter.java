@@ -69,4 +69,11 @@ public class NewsItemRecyclerAdapter extends RecyclerView.Adapter<NewsViewHolder
         mListener.onNewsItemClick(newsItem);
     }
 
+    @Override
+    public void onFavoriteClick(int position) {
+        NewsItem newsItem = mData.get(position);
+        newsItem.setIsFavorite(!newsItem.isFavorite());
+        notifyItemChanged(position);
+    }
+
 }

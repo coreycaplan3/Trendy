@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/news_feed_container"
     style="@style/Card.Clickable"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/news_feed_container"
     android:layout_margin="@dimen/activity_horizontal_margin">
 
     <LinearLayout
@@ -39,6 +40,22 @@
             android:layout_marginTop="@dimen/standard_padding_small"
             android:text="@string/default_news_author"
             android:textSize="14sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorBackground" />
+
+        <ImageButton
+            android:id="@+id/news_feed_favorite_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/standard_padding_small"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/standard_padding_small"
+            android:background="?android:attr/selectableItemBackground"
+            android:src="@drawable/ic_favorite_black_24dp"
+            tools:ignore="ContentDescription" />
 
     </LinearLayout>
 

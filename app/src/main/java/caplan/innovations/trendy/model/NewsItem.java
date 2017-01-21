@@ -21,22 +21,24 @@ public class NewsItem implements Parcelable {
     private final String mUrlToArticle;
     private final String mDescription;
     private final String mImageUrl;
+    private boolean mIsFavorite;
 
     public static NewsItem getDummy() {
         String title = "Android Course 101";
         String author = "Corey";
         String urlToArticle = "https://google.com";
         String description = TrendyApplication.context().getString(R.string.default_news_description);
-        return new NewsItem(title, author, urlToArticle, description, null);
+        return new NewsItem(title, author, urlToArticle, description, null, true);
     }
 
     public NewsItem(String title, @Nullable String author, String urlToArticle, String description,
-                    String imageUrl) {
+                    String imageUrl, boolean isFavorite) {
         mTitle = title;
         mAuthor = author;
         mUrlToArticle = urlToArticle;
         mDescription = description;
         mImageUrl = imageUrl;
+        mIsFavorite = isFavorite;
     }
 
     public String getTitle() {
@@ -60,6 +62,40 @@ public class NewsItem implements Parcelable {
         return mImageUrl;
     }
 
+    public boolean isFavorite() {
+        return mIsFavorite;
+    }
+
+    public void setIsFavorite(boolean isFavorite) {
+        mIsFavorite = isFavorite;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof NewsItem)) {
+            return false;
+        }
+        NewsItem otherItem = (NewsItem) obj;
+
+        return isEqual(mTitle, otherItem.mTitle)
+                && isEqual(mAuthor, otherItem.mAuthor)
+                && isEqual(mUrlToArticle, otherItem.mUrlToArticle)
+                && isEqual(mDescription, otherItem.mDescription)
+                && isEqual(mImageUrl, otherItem.mImageUrl)
+                && isEqual(mIsFavorite, otherItem.mIsFavorite);
+    }
+
+    @SuppressWarnings("RedundantIfStatement")
+    private static boolean isEqual(@Nullable Object o1, @Nullable Object o2) {
+        if (o1 != null && !o1.equals(o2)) {
+            return false;
+        } else if (o1 == null && o2 != null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -76,9 +112,10 @@ public class NewsItem implements Parcelable {
         dest.writeString(mUrlToArticle);
         dest.writeString(mDescription);
         dest.writeString(mImageUrl);
+        dest.writeByte((byte) (mIsFavorite ? 0x01 : 0x00));
     }
 
-    private NewsItem(Parcel in) {
+    NewsItem(Parcel in) {
         mTitle = in.readString();
         if (in.readByte() == 0x01) {
             mAuthor = in.readString();
@@ -89,6 +126,7 @@ public class NewsItem implements Parcelable {
         mUrlToArticle = in.readString();
         mDescription = in.readString();
         mImageUrl = in.readString();
+        mIsFavorite = in.readByte() == 0x01;
     }
 
     public static final Creator<NewsItem> CREATOR = new Creator<NewsItem>() {

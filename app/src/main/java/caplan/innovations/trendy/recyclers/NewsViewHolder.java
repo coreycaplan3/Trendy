@@ -2,6 +2,7 @@ package caplan.innovations.trendy.recyclers;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,6 +33,13 @@ class NewsViewHolder extends RecyclerView.ViewHolder {
          * @param position The position at which the click occurred.
          */
         void onNewsClickInternal(int position);
+
+        /**
+         * Called when the favorite button is clicked
+         *
+         * @param position The position at which the click occurred
+         */
+        void onFavoriteClick(int position);
     }
 
     @BindView(R.id.news_feed_image)
@@ -42,6 +50,9 @@ class NewsViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.news_feed_author_text_view)
     TextView mAuthorTextView;
+
+    @BindView(R.id.news_feed_favorite_button)
+    ImageButton mImageButton;
 
     private OnNewsActionListenerInternal mListenerInternal;
 
@@ -55,6 +66,12 @@ class NewsViewHolder extends RecyclerView.ViewHolder {
         mTitleTextView.setText(newsItem.getTitle());
         mAuthorTextView.setText(newsItem.getAuthor());
 //        TODO image
+
+        if (newsItem.isFavorite()) {
+            mImageButton.setImageResource(R.drawable.ic_favorite_black_24dp);
+        } else {
+            mImageButton.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+        }
     }
 
     @OnClick(R.id.news_feed_container)
@@ -62,6 +79,13 @@ class NewsViewHolder extends RecyclerView.ViewHolder {
         // Use the adapter position to get the position of the click
         int position = getAdapterPosition();
         mListenerInternal.onNewsClickInternal(position);
+    }
+
+    @OnClick(R.id.news_feed_favorite_button)
+    void onFavoriteButtonClick() {
+        // Use the adapter position to get the position of the click
+        int position = getAdapterPosition();
+        mListenerInternal.onFavoriteClick(position);
     }
 
 }

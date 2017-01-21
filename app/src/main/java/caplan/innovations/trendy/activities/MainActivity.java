@@ -23,7 +23,7 @@ import caplan.innovations.trendy.fragments.GoogleNewsFragment;
  * <p></p>
  * Purpose of Class: The main entry point for our application
  */
-public class MainActivity extends BaseActivity {
+public class MainActivity extends NavigationDrawerActivity {
 
     @BindView(R.id.tab_layout)
     TabLayout mTabLayout;
@@ -42,6 +42,11 @@ public class MainActivity extends BaseActivity {
 
         // #setupWithViewPager handles tab clicks and populating the tabs for us!
         mTabLayout.setupWithViewPager(mViewPager);
+    }
+
+    @Override
+    int getSelectedNavigationMenuItem() {
+        return R.id.navigation_drawer_menu_news;
     }
 
     @LayoutRes

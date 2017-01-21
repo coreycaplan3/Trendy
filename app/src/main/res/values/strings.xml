@@ -23,5 +23,9 @@
     <string name="full_article">Full Article</string>
     <string name="google_news">Google News</string>
     <string name="bbc_news">BBC News</string>
+    <string name="news">News</string>
+    <string name="favorites">Favorites</string>
+    <string name="drawer_open">Drawer Open</string>
+    <string name="drawer_closed">Drawer Closed</string>
 
 </resources>

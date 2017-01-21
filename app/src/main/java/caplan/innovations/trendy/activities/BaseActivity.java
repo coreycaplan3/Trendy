@@ -1,11 +1,15 @@
 package caplan.innovations.trendy.activities;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +19,7 @@ import android.view.View;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import caplan.innovations.trendy.R;
+import caplan.innovations.trendy.helpers.NavigationDrawerHelper;
 
 import static android.support.design.widget.AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL;
 
@@ -42,17 +47,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(getContentView());
 
-        progressDialog = new ProgressDialog(this) {
-            @Override
-            public void setMessage(CharSequence message) {
-                super.setMessage(message);
-                // Cache the value of message since the progress dialog doesn't have a getter for
-                // the message field.
-                mProgressMessage = (String) message;
-            }
-        };
-        progressDialog.setIndeterminate(true);
-        progressDialog.setCancelable(false);
+        setupProgressDialog();
 
         if (savedInstanceState != null) {
             progressDialog.setMessage(savedInstanceState.getString(KEY_PROGRESS_TEXT));
@@ -64,6 +59,20 @@ public abstract class BaseActivity extends AppCompatActivity {
         // Setup the views for the activity
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
+    }
+
+    private void setupProgressDialog() {
+        progressDialog = new ProgressDialog(this) {
+            @Override
+            public void setMessage(CharSequence message) {
+                super.setMessage(message);
+                // Cache the value of message since the progress dialog doesn't have a getter for
+                // the message field.
+                mProgressMessage = (String) message;
+            }
+        };
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
     }
 
     @Override
@@ -83,10 +92,27 @@ public abstract class BaseActivity extends AppCompatActivity {
     @LayoutRes
     abstract int getContentView();
 
+    /**
+     * Sets up the back button to be shown in this activity
+     */
+    void setupBackButton() {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
+        } else {
+            throw new NullPointerException("SupportActionBar is null!");
+        }
+    }
+
     @Override
     public boolean onSupportNavigateUp() {
-        finishAfterTransition();
-        return true;
+        // Default to going to the home screen
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        return false;
     }
 
     @Override
@@ -163,8 +189,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putBoolean(KEY_PROGRESS_SHOWING, isProgressShowing);
         outState.putString(KEY_PROGRESS_TEXT, mProgressMessage);
-
-
     }
 
 }
