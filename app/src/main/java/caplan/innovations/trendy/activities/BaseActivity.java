@@ -27,7 +27,7 @@ import static android.support.design.widget.AppBarLayout.LayoutParams.SCROLL_FLA
  * A base class of {@link AppCompatActivity} used to do a standardized setup that should be
  * universal amongst all activities.
  */
-public abstract class BaseActivity extends AppCompatActivity {
+abstract class BaseActivity extends AppCompatActivity {
 
     private static final String TAG = BaseActivity.class.getSimpleName();
 
