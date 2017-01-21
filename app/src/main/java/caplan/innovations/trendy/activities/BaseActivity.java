@@ -84,6 +84,19 @@ public abstract class BaseActivity extends AppCompatActivity {
     @LayoutRes
     abstract int getContentView();
 
+    /**
+     * Sets up the back button to be shown in this activity
+     */
+    void setupBackButton() {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
+        } else {
+            throw new NullPointerException("SupportActionBar is null!");
+        }
+    }
+
     @Override
     public boolean onSupportNavigateUp() {
         // Default to going to the home screen
