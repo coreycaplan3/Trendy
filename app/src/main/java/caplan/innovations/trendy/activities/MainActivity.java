@@ -1,22 +1,21 @@
 package caplan.innovations.trendy.activities;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.widget.TextView;
-
-import java.util.ArrayList;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import caplan.innovations.trendy.R;
-import caplan.innovations.trendy.model.NewsItem;
-import caplan.innovations.trendy.recyclers.NewsItemRecyclerAdapter;
-import caplan.innovations.trendy.recyclers.NewsItemRecyclerAdapter.OnNewsItemActionListener;
+import caplan.innovations.trendy.application.TrendyApplication;
+import caplan.innovations.trendy.fragments.BbcNewsFragment;
+import caplan.innovations.trendy.fragments.GoogleNewsFragment;
 
 /**
  * Created by Corey on 1/19/2017.
@@ -24,13 +23,13 @@ import caplan.innovations.trendy.recyclers.NewsItemRecyclerAdapter.OnNewsItemAct
  * <p></p>
  * Purpose of Class: The main entry point for our application
  */
-public class MainActivity extends BaseActivity implements OnNewsItemActionListener {
+public class MainActivity extends BaseActivity {
 
-    @BindView(R.id.recycler_view)
-    RecyclerView mRecyclerView;
+    @BindView(R.id.tab_layout)
+    TabLayout mTabLayout;
 
-    @SuppressWarnings("FieldCanBeLocal")
-    private NewsItemRecyclerAdapter mAdapter;
+    @BindView(R.id.view_pager)
+    ViewPager mViewPager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,18 +37,11 @@ public class MainActivity extends BaseActivity implements OnNewsItemActionListen
         // Keep in mind, BaseActivity calls ButterKnife#bind for us. However, in later situations
         // we will have to do it manually, like if we're working with a RecyclerView.
 
-        ArrayList<NewsItem> items = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            items.add(NewsItem.getDummy());
-        }
+        PagerAdapter pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(pagerAdapter);
 
-        /** Pass "this" since Activity is an instance of Context */
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(layoutManager);
-
-        /** Pass "this" since Activity implements OnNewsItemActionListener */
-        mAdapter = new NewsItemRecyclerAdapter(items, this);
-        mRecyclerView.setAdapter(mAdapter);
+        // #setupWithViewPager handles tab clicks and populating the tabs for us!
+        mTabLayout.setupWithViewPager(mViewPager);
     }
 
     @LayoutRes
@@ -58,10 +50,48 @@ public class MainActivity extends BaseActivity implements OnNewsItemActionListen
         return R.layout.activity_main;
     }
 
-    @Override
-    public void onNewsItemClick(NewsItem item) {
-        Intent intent = NewsDetailsActivity.createIntent(item);
-        this.startActivity(intent);
+    /**
+     * A private class that is used to
+     */
+    private static class MyFragmentPagerAdapter extends FragmentPagerAdapter {
+
+        private static final int COUNT = 2;
+
+        private MyFragmentPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return new GoogleNewsFragment();
+                case 1:
+                    return new BbcNewsFragment();
+                default:
+                    throw new IllegalArgumentException("Found illegal position: " + position);
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return COUNT;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            // Note, these titles are use to auto-populate the tabs' names
+            Context context = TrendyApplication.context();
+            switch (position) {
+                case 0:
+                    return context.getString(R.string.google_news);
+                case 1:
+                    return context.getString(R.string.bbc_news);
+                default:
+                    throw new IllegalArgumentException("Found illegal position: " + position);
+            }
+        }
+
     }
 
 }
