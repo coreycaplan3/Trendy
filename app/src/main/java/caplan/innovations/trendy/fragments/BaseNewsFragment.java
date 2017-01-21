@@ -2,6 +2,7 @@ package caplan.innovations.trendy.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -12,8 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.volley.toolbox.Volley;
-
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -22,8 +21,12 @@ import butterknife.Unbinder;
 import caplan.innovations.trendy.R;
 import caplan.innovations.trendy.activities.NewsDetailsActivity;
 import caplan.innovations.trendy.model.NewsItem;
+import caplan.innovations.trendy.network.NewsNetwork;
+import caplan.innovations.trendy.network.OnGetNewsCompleteListener;
+import caplan.innovations.trendy.network.TrendyRequestQueue;
 import caplan.innovations.trendy.recyclers.NewsItemRecyclerAdapter;
 import caplan.innovations.trendy.recyclers.NewsItemRecyclerAdapter.OnNewsItemActionListener;
+import caplan.innovations.trendy.utilities.UiUtility;
 
 /**
  * Created by Corey Caplan on 1/21/17.
@@ -33,7 +36,7 @@ import caplan.innovations.trendy.recyclers.NewsItemRecyclerAdapter.OnNewsItemAct
  * getting/refreshing data
  */
 abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionListener,
-        OnRefreshListener {
+        OnRefreshListener, OnGetNewsCompleteListener {
 
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -41,8 +44,10 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
-    @SuppressWarnings("FieldCanBeLocal")
     private NewsItemRecyclerAdapter mAdapter;
+
+    @NonNull
+    private ArrayList<NewsItem> mNewsItems = new ArrayList<>();
 
     private Unbinder mUnbinder;
 
@@ -53,16 +58,11 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
         View view = inflater.inflate(R.layout.fragment_news, container, false);
         mUnbinder = ButterKnife.bind(this, view);
 
-        ArrayList<NewsItem> items = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            items.add(NewsItem.getDummy());
-        }
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(layoutManager);
 
         /* Pass "this" since BaseNewsFragment implements OnNewsItemActionListener */
-        mAdapter = new NewsItemRecyclerAdapter(items, this);
+        mAdapter = new NewsItemRecyclerAdapter(mNewsItems, this);
         mRecyclerView.setAdapter(mAdapter);
 
         mSwipeRefreshLayout.setRefreshing(true);
@@ -80,7 +80,44 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
 
     @Override
     public void onRefresh() {
+        @NewsNetwork.NewsType int newsType = getNewsType();
 
+        /* Pass "this" since we implement the OnGetNewsCompleteListener interface */
+        switch (newsType) {
+            case NewsNetwork.NEWS_GOOGLE:
+                NewsNetwork.getGoogleNewsAsync(this);
+                break;
+            case NewsNetwork.NEWS_BBC:
+                NewsNetwork.getBbcNewsAsync(this);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid new type, found: " + newsType);
+        }
+    }
+
+    /**
+     * @return The type of news that the given fragment should display
+     */
+    @NewsNetwork.NewsType
+    abstract int getNewsType();
+
+    @Override
+    public void onGetNewsComplete(@Nullable ArrayList<NewsItem> newsItems) {
+        mSwipeRefreshLayout.setRefreshing(false);
+        if (newsItems == null) {
+            UiUtility.noConnectionSnackbar(getView(), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mSwipeRefreshLayout.setRefreshing(true);
+                    onRefresh();
+                }
+            });
+        } else {
+            // Propagate the results to the adapter, to update the list
+            mNewsItems.clear();
+            mNewsItems.addAll(newsItems);
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -94,6 +131,6 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        TrendyRequestQueue.cancelAll();
     }
 }

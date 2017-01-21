@@ -147,13 +147,12 @@ public class NewsItem implements Parcelable {
 
     public static class JsonDeserializer extends AbstractJsonDeserializer<NewsItem> {
 
-        JsonDeserializer(JSONObject jsonObject) {
-            super(jsonObject);
+        public JsonDeserializer() {
         }
 
         @Override
-        public NewsItem getObjectFromJson() {
-            JsonExtractor extractor = new JsonExtractor(getJsonObject());
+        public NewsItem getObjectFromJson(JSONObject jsonObject) {
+            JsonExtractor extractor = new JsonExtractor(jsonObject);
             String title = extractor.getString("title");
             String author = extractor.getString("author");
             String description = extractor.getString("description");

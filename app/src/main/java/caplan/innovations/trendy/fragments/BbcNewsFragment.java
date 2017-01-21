@@ -1,5 +1,7 @@
 package caplan.innovations.trendy.fragments;
 
+import caplan.innovations.trendy.network.NewsNetwork;
+
 /**
  * Created by Corey Caplan on 1/21/17.
  * Project: Trendy
@@ -8,6 +10,9 @@ package caplan.innovations.trendy.fragments;
  */
 public class BbcNewsFragment extends BaseNewsFragment {
 
-
+    @Override
+    int getNewsType() {
+        return NewsNetwork.NEWS_BBC;
+    }
 
 }

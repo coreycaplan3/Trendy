@@ -27,7 +27,7 @@ public class TrendyRequestQueue {
     private static TrendyRequestQueue sInstance;
 
     private static TrendyRequestQueue getInstance() {
-        if (sInstance != null) {
+        if (sInstance == null) {
             sInstance = new TrendyRequestQueue();
         }
         return sInstance;
