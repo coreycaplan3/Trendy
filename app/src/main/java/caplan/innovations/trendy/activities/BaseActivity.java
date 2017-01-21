@@ -31,7 +31,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @BindView(R.id.appbar)
+    @BindView(R.id.app_bar)
     AppBarLayout mAppBarLayout;
 
     private static final String KEY_PROGRESS_SHOWING = "PROGRESS_SHOWING";

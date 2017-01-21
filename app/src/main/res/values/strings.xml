@@ -21,5 +21,7 @@
         Ut porta, turpis quis commodo tincidunt, orci nisi feugiat est, sed tempor sapien eros ut ante. Sed aliquam pulvinar ante, ac pulvinar quam scelerisque vel. Suspendisse blandit sem sit amet egestas maximus. Integer commodo condimentum pharetra. Sed pellentesque nibh congue, lacinia ligula posuere, egestas tortor. Phasellus mi lectus, pretium vitae diam vel, mattis molestie dui. Maecenas vel nulla et urna interdum porta. Duis a pulvinar massa. Proin eu felis pretium, iaculis diam id, mattis diam. Cras sit amet metus erat.
     </string>
     <string name="full_article">Full Article</string>
+    <string name="google_news">Google News</string>
+    <string name="bbc_news">BBC News</string>
 
 </resources>
