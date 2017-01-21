@@ -4,6 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
+import caplan.innovations.trendy.R;
+import caplan.innovations.trendy.application.TrendyApplication;
+
 /**
  * Created by Corey on 1/20/2017.
  * Project: Trendy
@@ -18,6 +21,14 @@ public class NewsItem implements Parcelable {
     private final String mUrlToArticle;
     private final String mDescription;
     private final String mImageUrl;
+
+    public static NewsItem getDummy() {
+        String title = "Android Course 101";
+        String author = "Corey";
+        String urlToArticle = "https://google.com";
+        String description = TrendyApplication.context().getString(R.string.default_news_description);
+        return new NewsItem(title, author, urlToArticle, description, null);
+    }
 
     public NewsItem(String title, @Nullable String author, String urlToArticle, String description,
                     String imageUrl) {
