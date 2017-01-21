@@ -50,6 +50,7 @@ public class TrendyRequestQueue {
      *
      * @param request The {@link Request} that should be performed.
      */
+    @SuppressWarnings("WeakerAccess")
     public static void addToRequestQueue(Request request) {
         getInstance().mRequestQueue.add(request);
     }
