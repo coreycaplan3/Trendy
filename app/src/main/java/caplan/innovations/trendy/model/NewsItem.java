@@ -4,8 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import caplan.innovations.trendy.R;
 import caplan.innovations.trendy.application.TrendyApplication;
+import caplan.innovations.trendy.utilities.JsonExtractor;
 
 /**
  * Created by Corey on 1/20/2017.
@@ -140,5 +144,45 @@ public class NewsItem implements Parcelable {
             return new NewsItem[size];
         }
     };
+
+    public static class JsonDeserializer extends AbstractJsonDeserializer<NewsItem> {
+
+        JsonDeserializer(JSONObject jsonObject) {
+            super(jsonObject);
+        }
+
+        @Override
+        public NewsItem getObjectFromJson() {
+            JsonExtractor extractor = new JsonExtractor(getJsonObject());
+            String title = extractor.getString("title");
+            String author = extractor.getString("author");
+            String description = extractor.getString("description");
+            String url = extractor.getString("url");
+            String urlToImage = extractor.getString("urlToImage");
+
+            if (title == null) {
+                return null;
+            }
+            // Check the API didn't return an empty string
+            if (isEmpty(author)) {
+                author = null;
+            }
+            if(isEmpty(description)) {
+                description = null;
+            }
+            if(isEmpty(url)) {
+                url = null;
+            }
+            if(isEmpty(urlToImage)) {
+                urlToImage = null;
+            }
+            return new NewsItem(title, author, url, description, urlToImage, false);
+        }
+
+        private static boolean isEmpty(String string) {
+            return string != null && string.length() == 0;
+        }
+
+    }
 
 }

@@ -11,11 +11,11 @@ import java.util.ArrayList;
  * <p></p>
  * Purpose of Class: To layout the boilerplate code necessary to create Java object from JSON
  */
-abstract class JsonExtractor<T> {
+abstract class AbstractJsonDeserializer<T> {
 
     private JSONObject mJsonObject;
 
-    JsonExtractor(JSONObject jsonObject) {
+    AbstractJsonDeserializer(JSONObject jsonObject) {
         this.mJsonObject = jsonObject;
     }
 
@@ -26,7 +26,7 @@ abstract class JsonExtractor<T> {
     /**
      * @return An object to which this generic class conforms
      */
-    abstract T getObjectFromJson();
+    public abstract T getObjectFromJson();
 
     /**
      * @param array The JSON array from which the objects will be extracted
@@ -34,7 +34,7 @@ abstract class JsonExtractor<T> {
      * @param <T> The type of object to be returned as an array list
      * @return An array of objects of type T
      */
-    static <T> ArrayList<T> getArrayFromJson(JSONArray array, JsonExtractor<T> extractor) {
+    static <T> ArrayList<T> getArrayFromJson(JSONArray array, AbstractJsonDeserializer<T> extractor) {
         ArrayList<T> list = new ArrayList<>();
         for (int i = 0; i < array.length(); i++) {
             list.add(extractor.getObjectFromJson());
