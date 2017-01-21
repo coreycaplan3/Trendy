@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,6 +24,8 @@ import caplan.innovations.trendy.model.NewsItem;
  * Purpose of Class: To display the details of our news item
  */
 public class NewsDetailsActivity extends BaseActivity {
+
+    private static final String TAG = NewsDetailsActivity.class.getSimpleName();
 
     private static final String KEY_NEWS = "NEWS";
 
@@ -66,9 +69,18 @@ public class NewsDetailsActivity extends BaseActivity {
             mNewsItem = getIntent().getParcelableExtra(KEY_NEWS);
         }
 
+        // Setup the ActionBar
+        setSupportActionBar(mToolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
+        } else {
+            Log.e(TAG, "onCreate: ", new NullPointerException("SupportActionBar is null!"));
+        }
+
         // Register links so they are clickable
         mNewsUrlTextView.setMovementMethod(LinkMovementMethod.getInstance());
-
         bindNewsItem();
     }
 
