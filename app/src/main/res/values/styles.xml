@@ -13,12 +13,18 @@
         <item name="android:textColorSecondary">@color/colorTextSecondary</item>
         <item name="textColorError">@android:color/holo_red_dark</item>
 
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="android:actionOverflowButtonStyle">@style/ActionOverflow</item>
         <item name="android:actionMenuTextColor">#FFF</item>
         <item name="android:navigationIcon">@drawable/ic_arrow_back_white_24dp</item>
 
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowContentTransitions">true</item>
+    </style>
+
+    <style name="DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@android:color/white</item>
     </style>
 
     <style name="ActionOverflow">
