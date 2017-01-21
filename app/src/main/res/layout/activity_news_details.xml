@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/app_bar" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/news_details_image"
+                android:layout_width="match_parent"
+                android:layout_height="172dp"
+                android:src="@drawable/ic_library_books_black_24dp"
+                tools:ignore="ContentDescription" />
+
+            <!-- TITLE -->
+            <TextView
+                android:id="@+id/news_details_title_text_view"
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="24dp"
+                android:text="@string/default_news_title"
+                android:textAlignment="center"
+                android:textIsSelectable="true"
+                android:textSize="24sp" />
+
+            <!-- AUTHOR -->
+            <TextView
+                android:id="@+id/news_details_author_text_view"
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/standard_padding_small"
+                android:text="@string/default_news_author"
+                android:textAlignment="textStart"
+                android:textIsSelectable="true"
+                android:textSize="16sp" />
+
+            <!-- DESCRIPTION -->
+            <TextView
+                android:id="@+id/news_details_description_text_view"
+                style="@style/TextAppearance.AppCompat.Body1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/standard_padding_small"
+                android:lineSpacingMultiplier="1.2"
+                android:text="@string/default_news_description"
+                android:textAlignment="textStart"
+                android:textIsSelectable="true"
+                android:textSize="15sp" />
+
+            <!-- URL -->
+            <TextView
+                android:id="@+id/news_details_url_text_view"
+                style="@style/TextAppearance.AppCompat.Body1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/standard_padding_small"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/standard_padding_small"
+                android:textIsSelectable="true"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>
