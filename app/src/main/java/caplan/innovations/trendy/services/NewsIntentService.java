@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
-import java.util.ArrayList;
+import org.json.JSONArray;
 
 import caplan.innovations.trendy.application.TrendyApplication;
+import caplan.innovations.trendy.database.NewsDatabaseController;
 import caplan.innovations.trendy.model.NewsItem;
 import caplan.innovations.trendy.network.NewsNetwork;
 import caplan.innovations.trendy.receivers.NewsBroadcastReceiver;
+import io.realm.Realm;
 
 /**
  * Created by Corey on 1/21/2017.
@@ -28,23 +30,23 @@ public class NewsIntentService extends IntentService {
 
     /**
      * The key used in this Intent Service's broadcast when news items are finished being retrieved
-     * from the network.
+     * from the network. Evaluates to a boolean, either true if successful, or false otherwise.
      */
-    public static final String KEY_NEWS_ITEMS = "NEWS_ITEMS";
+    public static final String KEY_IS_NEWS_SUCCESSFUL = "IS_NEWS_SUCCESSFUL";
 
     public NewsIntentService() {
         super(TAG);
     }
 
     public static void getGoogleNews() {
-        getNews(NewsNetwork.NEWS_GOOGLE);
+        getNews(NewsItem.NEWS_GOOGLE);
     }
 
     public static void getBbcNews() {
-        getNews(NewsNetwork.NEWS_BBC);
+        getNews(NewsItem.NEWS_BBC);
     }
 
-    private static void getNews(@NewsNetwork.NewsType int newsType) {
+    private static void getNews(@NewsItem.Type int newsType) {
         Intent intent = new Intent(TrendyApplication.context(), NewsIntentService.class);
         intent.putExtra(KEY_NEWS_TYPE, newsType);
         TrendyApplication.getInstance().startService(intent);
@@ -56,26 +58,35 @@ public class NewsIntentService extends IntentService {
             return;
         }
 
+        @NewsItem.Type
         int newsType = intent.getIntExtra(KEY_NEWS_TYPE, -1);
+        //noinspection WrongConstant
         if (newsType == -1) {
             throw new IllegalArgumentException("Invalid news type, found: " + newsType);
         }
 
-        ArrayList<NewsItem> newsItems;
+        JSONArray newsItemsAsJsonArray;
         switch (newsType) {
-            case NewsNetwork.NEWS_GOOGLE:
-                newsItems = NewsNetwork.getGoogleNewsAndBlock();
+            case NewsItem.NEWS_GOOGLE:
+                newsItemsAsJsonArray = NewsNetwork.getGoogleNewsAndBlock();
                 intent = new Intent(NewsBroadcastReceiver.INTENT_FILTER_GOOGLE_NEWS);
                 break;
-            case NewsNetwork.NEWS_BBC:
-                newsItems = NewsNetwork.getBbcNewsBlock();
+            case NewsItem.NEWS_BBC:
+                newsItemsAsJsonArray = NewsNetwork.getBbcNewsAndBlock();
                 intent = new Intent(NewsBroadcastReceiver.INTENT_FILTER_BBC_NEWS);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid news type, found: " + newsType);
         }
 
-        intent.putExtra(KEY_NEWS_ITEMS, newsItems);
+        if (newsItemsAsJsonArray != null) {
+            Realm realm = Realm.getDefaultInstance();
+            NewsDatabaseController.getInstance()
+                    .insertNewsWithTransaction(realm, newsItemsAsJsonArray, newsType);
+            realm.close();
+        }
+
+        intent.putExtra(KEY_IS_NEWS_SUCCESSFUL, newsItemsAsJsonArray != null);
         LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);
         broadcastManager.sendBroadcast(intent);
     }

@@ -3,8 +3,6 @@ package caplan.innovations.trendy.recyclers;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
@@ -95,9 +93,9 @@ class NewsViewHolder extends RecyclerView.ViewHolder {
         }
 
         if (newsItem.isFavorite()) {
-            mImageButton.setImageResource(R.drawable.ic_favorite_black_24dp);
+            mImageButton.setImageResource(R.drawable.ic_favorite_red_24dp);
         } else {
-            mImageButton.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+            mImageButton.setImageResource(R.drawable.ic_favorite_border_red_24dp);
         }
 
         if (newsItem.getImageUrl() != null) {

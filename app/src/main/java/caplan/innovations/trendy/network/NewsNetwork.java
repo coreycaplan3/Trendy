@@ -1,6 +1,5 @@
 package caplan.innovations.trendy.network;
 
-import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -8,9 +7,10 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -18,7 +18,6 @@ import java.util.concurrent.TimeoutException;
 import caplan.innovations.trendy.R;
 import caplan.innovations.trendy.application.TrendyApplication;
 import caplan.innovations.trendy.model.NewsItem;
-import caplan.innovations.trendy.model.NewsItem.JsonDeserializer;
 import caplan.innovations.trendy.utilities.JsonExtractor;
 
 /**
@@ -45,13 +44,6 @@ public class NewsNetwork {
     private static final String SOURCE_GOOGLE = "google-news";
     private static final String SOURCE_BBC = "bbc-news";
 
-    public static final int NEWS_GOOGLE = 1;
-    public static final int NEWS_BBC = 2;
-
-    @IntDef({NEWS_GOOGLE, NEWS_BBC})
-    public @interface NewsType {
-    }
-
     /**
      * Gets the news from BBC on this thread and blocks until it does so.
      *
@@ -61,8 +53,8 @@ public class NewsNetwork {
      * or invalid JSON being returned from the server.
      */
     @Nullable
-    public static ArrayList<NewsItem> getBbcNewsBlock() {
-        return getNews(NEWS_BBC);
+    public static JSONArray getBbcNewsAndBlock() {
+        return getNews(NewsItem.NEWS_BBC);
     }
 
     /**
@@ -73,11 +65,13 @@ public class NewsNetwork {
      * different types of errors. Some errors include loss of network connection,
      * or invalid JSON being returned from the server.
      */
-    public static ArrayList<NewsItem> getGoogleNewsAndBlock() {
-        return getNews( NEWS_GOOGLE);
+    @Nullable
+    public static JSONArray getGoogleNewsAndBlock() {
+        return getNews(NewsItem.NEWS_GOOGLE);
     }
 
-    private static ArrayList<NewsItem> getNews(@NewsType int newsType) {
+    @Nullable
+    private static JSONArray getNews(@NewsItem.Type int newsType) {
         String url = buildUrl(newsType);
 
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
@@ -89,17 +83,19 @@ public class NewsNetwork {
             // Beware, this blocks this currently running thread until the result is retrieved.
             JSONObject jsonObject = future.get(TIMEOUT_THIRTY_SECONDS, TimeUnit.SECONDS);
 
-            Log.d(TAG, "onResponse: Received response: " + jsonObject.toString());
+            try {
+                Log.d(TAG, "onResponse: Received response: " + jsonObject.toString(4));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
             JSONArray jsonArray = new JsonExtractor(jsonObject)
                     .getJsonArray(RESPONSE_ARTICLES);
-            if (jsonArray == null) {
-                return null;
-            }
 
-            JsonDeserializer deserializer = new JsonDeserializer();
-            return JsonDeserializer.getArrayFromJson(jsonArray, deserializer);
+            // Insert the date at which the item was retrieved for sorting purposes
+            injectDateIntoNewsObjects(jsonArray);
 
+            return jsonArray;
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             Log.e(TAG, "getNews: ", e);
 
@@ -108,20 +104,33 @@ public class NewsNetwork {
 
     }
 
-    private static String buildUrl(@NewsType int newsType) {
+    private static String buildUrl(@NewsItem.Type int newsType) {
         String apiKey = TrendyApplication.context().getString(R.string.news_api_key);
         String url = String.format("%s?%s=%s", BASE_URL, PARAM_API_KEY, apiKey);
         switch (newsType) {
-            case NEWS_GOOGLE:
+            case NewsItem.NEWS_GOOGLE:
                 url = String.format("%s&%s=%s", url, PARAM_SOURCE, SOURCE_GOOGLE);
                 break;
-            case NEWS_BBC:
+            case NewsItem.NEWS_BBC:
                 url = String.format("%s&%s=%s", url, PARAM_SOURCE, SOURCE_BBC);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid newsType, found: " + newsType);
         }
         return url;
+    }
+
+    private static void injectDateIntoNewsObjects(@Nullable JSONArray jsonArray) {
+        if (jsonArray != null) {
+            for (int i = jsonArray.length() - 1; i >= 0; i--) {
+                try {
+                    jsonArray.getJSONObject(i)
+                            .put("my_date", Calendar.getInstance().getTimeInMillis());
+                } catch (JSONException e) {
+                    Log.d(TAG, "getNews: ", e);
+                }
+            }
+        }
     }
 
 }

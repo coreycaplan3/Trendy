@@ -20,9 +20,8 @@ public interface OnNewsItemsReceivedFromBroadcastListener {
     /**
      * Called when a broadcast is received from the {@link NewsIntentService}.
      *
-     * @param newsItems The news articles that were retrieved from the network or null if an
-     *                  error occurred.
+     * @param isSuccessful True if the network operation was successful, false otherwise
      */
-    void onNewsItemsReceivedFromBroadcast(@Nullable ArrayList<NewsItem> newsItems);
+    void onNewsItemsReceivedFromBroadcast(boolean isSuccessful);
 
 }
