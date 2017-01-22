@@ -1,6 +1,8 @@
 package caplan.innovations.trendy.recyclers;
 
+import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,11 +39,37 @@ public class NewsItemRecyclerAdapter extends RecyclerView.Adapter<NewsViewHolder
     @NonNull
     private ArrayList<NewsItem> mData;
     private OnNewsItemActionListener mListener;
+    private Fragment mFragment;
+    private Activity mActivity;
 
+    /**
+     * @param newsItems The news items instance that will serve as the data model.
+     * @param listener  The {@link OnNewsItemActionListener} to send different actions back to the
+     *                  implementor.
+     * @param fragment  The {@link Fragment} in which the adapter operates. Used with the Glide
+     *                  library for fine-tuning the image retrieval process.
+     */
     public NewsItemRecyclerAdapter(@NonNull ArrayList<NewsItem> newsItems,
-                                   OnNewsItemActionListener listener) {
+                                   OnNewsItemActionListener listener,
+                                   Fragment fragment) {
         mData = newsItems;
         mListener = listener;
+        mFragment = fragment;
+    }
+
+    /**
+     * @param newsItems The news items instance that will serve as the data model.
+     * @param listener  The {@link OnNewsItemActionListener} to send different actions back to the
+     *                  implementor.
+     * @param activity  The {@link Activity} in which the adapter operates. Used with the Glide
+     *                  library for fine-tuning the image retrieval process.
+     */
+    public NewsItemRecyclerAdapter(@NonNull ArrayList<NewsItem> newsItems,
+                                   OnNewsItemActionListener listener,
+                                   Activity activity) {
+        mData = newsItems;
+        mListener = listener;
+        mActivity = activity;
     }
 
     @Override
@@ -55,7 +83,14 @@ public class NewsItemRecyclerAdapter extends RecyclerView.Adapter<NewsViewHolder
     @Override
     public void onBindViewHolder(NewsViewHolder holder, int position) {
         NewsItem newsItem = mData.get(position);
-        holder.bind(newsItem);
+
+        if (mFragment != null) {
+            holder.bind(newsItem, mFragment);
+        } else if (mActivity != null) {
+            holder.bind(newsItem, mActivity);
+        } else {
+            throw new NullPointerException("Activity and Fragment cannot be null!");
+        }
     }
 
     @Override

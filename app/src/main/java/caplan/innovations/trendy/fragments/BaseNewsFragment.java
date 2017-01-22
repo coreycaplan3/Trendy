@@ -62,7 +62,7 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
         mRecyclerView.setLayoutManager(layoutManager);
 
         /* Pass "this" since BaseNewsFragment implements OnNewsItemActionListener */
-        mAdapter = new NewsItemRecyclerAdapter(mNewsItems, this);
+        mAdapter = new NewsItemRecyclerAdapter(mNewsItems, this, this);
         mRecyclerView.setAdapter(mAdapter);
 
         mSwipeRefreshLayout.setRefreshing(true);

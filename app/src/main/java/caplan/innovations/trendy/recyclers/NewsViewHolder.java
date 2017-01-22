@@ -1,11 +1,20 @@
 package caplan.innovations.trendy.recyclers;
 
+import android.app.Activity;
+import android.graphics.drawable.Drawable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+
+import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -42,6 +51,9 @@ class NewsViewHolder extends RecyclerView.ViewHolder {
         void onFavoriteClick(int position);
     }
 
+    @BindDrawable(R.drawable.ic_cloud_off_black_48dp)
+    Drawable mErrorDrawable;
+
     @BindView(R.id.news_feed_image)
     ImageView mImageView;
 
@@ -59,18 +71,36 @@ class NewsViewHolder extends RecyclerView.ViewHolder {
     NewsViewHolder(View itemView, OnNewsActionListenerInternal listenerInternal) {
         super(itemView);
         ButterKnife.bind(this, itemView);
+        mErrorDrawable.setAlpha(68);
         mListenerInternal = listenerInternal;
     }
 
-    void bind(NewsItem newsItem) {
+    void bind(NewsItem newsItem, Activity activity) {
+        RequestManager glideRequestManager = Glide.with(activity);
+        bind(newsItem, glideRequestManager);
+    }
+
+    void bind(NewsItem newsItem, Fragment fragment) {
+        RequestManager glideRequestManager = Glide.with(fragment);
+        bind(newsItem, glideRequestManager);
+    }
+
+    private void bind(NewsItem newsItem, RequestManager glideRequestManager) {
         mTitleTextView.setText(newsItem.getTitle());
         mAuthorTextView.setText(newsItem.getAuthor());
-//        TODO image
 
         if (newsItem.isFavorite()) {
             mImageButton.setImageResource(R.drawable.ic_favorite_black_24dp);
         } else {
             mImageButton.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+        }
+
+        if (newsItem.getImageUrl() != null) {
+            glideRequestManager.load(newsItem.getImageUrl())
+                    .error(mErrorDrawable)
+                    .into(mImageView);
+        } else {
+            mImageView.setVisibility(View.GONE);
         }
     }
 

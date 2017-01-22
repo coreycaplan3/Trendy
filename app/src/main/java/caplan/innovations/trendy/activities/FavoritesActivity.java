@@ -36,8 +36,8 @@ public class FavoritesActivity extends NavigationDrawerActivity implements OnNew
         ArrayList<NewsItem> items = new ArrayList<>();
         items.add(NewsItem.getDummy());
 
-        /** Pass "this" since this activity implements OnNewsItemActionListener */
-        mAdapter = new NewsItemRecyclerAdapter(items, this);
+        /* Pass "this" since this activity implements OnNewsItemActionListener */
+        mAdapter = new NewsItemRecyclerAdapter(items, this, this);
         mRecyclerView.setAdapter(mAdapter);
 
         LinearLayoutManager manager = new LinearLayoutManager(this);
