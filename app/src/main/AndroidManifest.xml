@@ -2,6 +2,8 @@
 
     package="caplan.innovations.trendy">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".application.TrendyApplication"
         android:allowBackup="true"
