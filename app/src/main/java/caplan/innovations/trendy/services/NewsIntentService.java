@@ -46,7 +46,7 @@ public class NewsIntentService extends IntentService {
 
     private static void getNews(@NewsNetwork.NewsType int newsType) {
         Intent intent = new Intent(TrendyApplication.context(), NewsIntentService.class);
-        intent.putExtra(KEY_NEWS_TYPE, NewsNetwork.NEWS_GOOGLE);
+        intent.putExtra(KEY_NEWS_TYPE, newsType);
         TrendyApplication.getInstance().startService(intent);
     }
 
