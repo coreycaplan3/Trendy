@@ -26,6 +26,7 @@
             android:layout_marginLeft="@dimen/standard_padding"
             android:layout_marginRight="@dimen/standard_padding"
             android:layout_marginTop="24dp"
+            android:layout_marginBottom="@dimen/standard_padding_small"
             android:text="@string/default_news_title"
             android:textSize="24sp" />
 
@@ -37,7 +38,6 @@
             android:layout_marginBottom="16dp"
             android:layout_marginLeft="@dimen/standard_padding"
             android:layout_marginRight="@dimen/standard_padding"
-            android:layout_marginTop="@dimen/standard_padding_small"
             android:text="@string/default_news_author"
             android:textSize="14sp" />
 

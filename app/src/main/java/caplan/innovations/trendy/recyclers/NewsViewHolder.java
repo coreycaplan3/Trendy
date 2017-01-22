@@ -87,7 +87,12 @@ class NewsViewHolder extends RecyclerView.ViewHolder {
 
     private void bind(NewsItem newsItem, RequestManager glideRequestManager) {
         mTitleTextView.setText(newsItem.getTitle());
-        mAuthorTextView.setText(newsItem.getAuthor());
+        if (newsItem.getAuthor() != null) {
+            mAuthorTextView.setVisibility(View.VISIBLE);
+            mAuthorTextView.setText(newsItem.getAuthor());
+        } else {
+            mAuthorTextView.setVisibility(View.GONE);
+        }
 
         if (newsItem.isFavorite()) {
             mImageButton.setImageResource(R.drawable.ic_favorite_black_24dp);

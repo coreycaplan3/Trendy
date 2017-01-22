@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import caplan.innovations.trendy.R;
@@ -22,8 +21,11 @@ public class NewsItem implements Parcelable {
     private final String mTitle;
     @Nullable
     private final String mAuthor;
+    @Nullable
     private final String mUrlToArticle;
+    @Nullable
     private final String mDescription;
+    @Nullable
     private final String mImageUrl;
     private boolean mIsFavorite;
 
@@ -35,8 +37,8 @@ public class NewsItem implements Parcelable {
         return new NewsItem(title, author, urlToArticle, description, null, true);
     }
 
-    public NewsItem(String title, @Nullable String author, String urlToArticle, String description,
-                    String imageUrl, boolean isFavorite) {
+    private NewsItem(String title, @Nullable String author, @Nullable String urlToArticle,
+                    @Nullable String description, @Nullable String imageUrl, boolean isFavorite) {
         mTitle = title;
         mAuthor = author;
         mUrlToArticle = urlToArticle;
@@ -113,23 +115,52 @@ public class NewsItem implements Parcelable {
         if (mAuthor != null) {
             dest.writeString(mAuthor);
         }
-        dest.writeString(mUrlToArticle);
-        dest.writeString(mDescription);
-        dest.writeString(mImageUrl);
+
+        dest.writeByte((byte) (mUrlToArticle != null ? 0x01 : 0x00));
+        if (mUrlToArticle != null) {
+            dest.writeString(mUrlToArticle);
+        }
+
+        dest.writeByte((byte) (mDescription != null ? 0x01 : 0x00));
+        if (mDescription != null) {
+            dest.writeString(mDescription);
+        }
+
+        dest.writeByte((byte) (mImageUrl != null ? 0x01 : 0x00));
+        if (mImageUrl != null) {
+            dest.writeString(mImageUrl);
+        }
+
         dest.writeByte((byte) (mIsFavorite ? 0x01 : 0x00));
     }
 
-    NewsItem(Parcel in) {
+    private NewsItem(Parcel in) {
         mTitle = in.readString();
+
         if (in.readByte() == 0x01) {
             mAuthor = in.readString();
         } else {
             mAuthor = null;
         }
 
-        mUrlToArticle = in.readString();
-        mDescription = in.readString();
-        mImageUrl = in.readString();
+        if(in.readByte() == 0x01) {
+            mUrlToArticle = in.readString();
+        } else {
+            mUrlToArticle = null;
+        }
+
+        if(in.readByte() == 0x01) {
+            mDescription = in.readString();
+        } else {
+            mDescription = null;
+        }
+
+        if(in.readByte() == 0x01) {
+            mImageUrl = in.readString();
+        } else {
+            mImageUrl = null;
+        }
+
         mIsFavorite = in.readByte() == 0x01;
     }
 
@@ -179,7 +210,9 @@ public class NewsItem implements Parcelable {
         }
 
         private static boolean isEmpty(String string) {
-            return string != null && string.length() == 0;
+            return string == null
+                    || string.trim().length() == 0
+                    || string.trim().equalsIgnoreCase("null");
         }
 
     }

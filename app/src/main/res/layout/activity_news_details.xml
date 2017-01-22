@@ -22,8 +22,8 @@
             <ImageView
                 android:id="@+id/news_details_image"
                 android:layout_width="match_parent"
-                android:layout_height="172dp"
-                android:src="@drawable/ic_library_books_black_24dp"
+                android:layout_height="196dp"
+                android:scaleType="fitXY"
                 tools:ignore="ContentDescription" />
 
             <!-- TITLE -->
