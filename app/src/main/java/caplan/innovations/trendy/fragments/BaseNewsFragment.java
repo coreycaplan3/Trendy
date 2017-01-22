@@ -78,7 +78,7 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
         LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(getContext());
         /* Pass "this" since this fragment implements the required interface */
         mNewsBroadcastReceiver = new NewsBroadcastReceiver(this);
-        IntentFilter filter = new IntentFilter(NewsBroadcastReceiver.INTENT_FILTER_ACTION);
+        IntentFilter filter = new IntentFilter(getNewsIntentFilter());
         broadcastManager.registerReceiver(mNewsBroadcastReceiver, filter);
     }
 
@@ -118,6 +118,12 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
      */
     @NewsNetwork.NewsType
     abstract int getNewsType();
+
+    /**
+     * @return The intent filter action to use for this news fragment. An example would be
+     * {@link NewsBroadcastReceiver#INTENT_FILTER_GOOGLE_NEWS}.
+     */
+    abstract String getNewsIntentFilter();
 
     @Override
     public void onNewsItemsReceivedFromBroadcast(@Nullable ArrayList<NewsItem> newsItems) {

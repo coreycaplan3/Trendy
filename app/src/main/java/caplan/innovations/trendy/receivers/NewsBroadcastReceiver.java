@@ -24,7 +24,8 @@ public class NewsBroadcastReceiver extends BroadcastReceiver {
 
     private OnNewsItemsReceivedFromBroadcastListener mListener;
 
-    public static final String INTENT_FILTER_ACTION = "NEWS_BROADCAST_RECEIVER";
+    public static final String INTENT_FILTER_GOOGLE_NEWS = "NEWS_BROADCAST_RECEIVER_GOOGLE";
+    public static final String INTENT_FILTER_BBC_NEWS = "NEWS_BROADCAST_RECEIVER_BBC";
 
     public NewsBroadcastReceiver(OnNewsItemsReceivedFromBroadcastListener listener) {
         mListener = listener;

@@ -62,13 +62,14 @@ public class NewsIntentService extends IntentService {
         }
 
         ArrayList<NewsItem> newsItems;
-        intent = new Intent(NewsBroadcastReceiver.INTENT_FILTER_ACTION);
         switch (newsType) {
             case NewsNetwork.NEWS_GOOGLE:
                 newsItems = NewsNetwork.getGoogleNewsAndBlock();
+                intent = new Intent(NewsBroadcastReceiver.INTENT_FILTER_GOOGLE_NEWS);
                 break;
             case NewsNetwork.NEWS_BBC:
                 newsItems = NewsNetwork.getBbcNewsBlock();
+                intent = new Intent(NewsBroadcastReceiver.INTENT_FILTER_BBC_NEWS);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid news type, found: " + newsType);

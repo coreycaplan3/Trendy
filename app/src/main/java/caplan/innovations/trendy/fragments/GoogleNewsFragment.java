@@ -1,6 +1,7 @@
 package caplan.innovations.trendy.fragments;
 
 import caplan.innovations.trendy.network.NewsNetwork;
+import caplan.innovations.trendy.receivers.NewsBroadcastReceiver;
 
 /**
  * Created by Corey Caplan on 1/21/17.
@@ -13,6 +14,11 @@ public class GoogleNewsFragment extends BaseNewsFragment {
     @Override
     int getNewsType() {
         return NewsNetwork.NEWS_GOOGLE;
+    }
+
+    @Override
+    String getNewsIntentFilter() {
+        return NewsBroadcastReceiver.INTENT_FILTER_GOOGLE_NEWS;
     }
 
 }
