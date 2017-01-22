@@ -1,7 +1,10 @@
 package caplan.innovations.trendy.fragments;
 
-import caplan.innovations.trendy.network.NewsNetwork;
+import caplan.innovations.trendy.database.NewsDatabaseController;
+import caplan.innovations.trendy.model.NewsItem;
 import caplan.innovations.trendy.receivers.NewsBroadcastReceiver;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * Created by Corey Caplan on 1/21/17.
@@ -13,7 +16,7 @@ public class GoogleNewsFragment extends BaseNewsFragment {
 
     @Override
     int getNewsType() {
-        return NewsNetwork.NEWS_GOOGLE;
+        return NewsItem.NEWS_GOOGLE;
     }
 
     @Override
@@ -21,4 +24,8 @@ public class GoogleNewsFragment extends BaseNewsFragment {
         return NewsBroadcastReceiver.INTENT_FILTER_GOOGLE_NEWS;
     }
 
+    @Override
+    RealmResults<NewsItem> getRealmResultsForAdapter(Realm realm) {
+        return NewsDatabaseController.getInstance().getGoogleNews(realm);
+    }
 }

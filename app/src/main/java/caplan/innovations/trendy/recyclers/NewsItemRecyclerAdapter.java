@@ -8,11 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-
 import caplan.innovations.trendy.R;
+import caplan.innovations.trendy.database.NewsDatabaseController;
 import caplan.innovations.trendy.model.NewsItem;
 import caplan.innovations.trendy.recyclers.NewsViewHolder.OnNewsActionListenerInternal;
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 
 /**
  * Created by Corey Caplan on 1/20/17.
@@ -36,11 +38,31 @@ public class NewsItemRecyclerAdapter extends RecyclerView.Adapter<NewsViewHolder
         void onNewsItemClick(NewsItem item);
     }
 
+    private Realm mRealm;
     @NonNull
-    private ArrayList<NewsItem> mData;
+    private RealmResults<NewsItem> mData;
     private OnNewsItemActionListener mListener;
     private Fragment mFragment;
     private Activity mActivity;
+    private final boolean mShouldLimitListSize;
+    private RealmChangeListener<RealmResults<NewsItem>> mRealmListener;
+
+    private NewsItemRecyclerAdapter(Realm realm,
+                                    @NonNull RealmResults<NewsItem> newsItems,
+                                    OnNewsItemActionListener listener,
+                                    boolean shouldLimitListSize) {
+        mRealm = realm;
+        mData = newsItems;
+        mListener = listener;
+        mShouldLimitListSize = shouldLimitListSize;
+
+        mRealmListener = new RealmChangeListener<RealmResults<NewsItem>>() {
+            @Override
+            public void onChange(RealmResults<NewsItem> element) {
+                notifyDataSetChanged();
+            }
+        };
+    }
 
     /**
      * @param newsItems The news items instance that will serve as the data model.
@@ -49,11 +71,12 @@ public class NewsItemRecyclerAdapter extends RecyclerView.Adapter<NewsViewHolder
      * @param fragment  The {@link Fragment} in which the adapter operates. Used with the Glide
      *                  library for fine-tuning the image retrieval process.
      */
-    public NewsItemRecyclerAdapter(@NonNull ArrayList<NewsItem> newsItems,
+    public NewsItemRecyclerAdapter(Realm realm,
+                                   @NonNull RealmResults<NewsItem> newsItems,
                                    OnNewsItemActionListener listener,
-                                   Fragment fragment) {
-        mData = newsItems;
-        mListener = listener;
+                                   Fragment fragment,
+                                   boolean shouldLimitListSize) {
+        this(realm, newsItems, listener, shouldLimitListSize);
         mFragment = fragment;
     }
 
@@ -64,12 +87,28 @@ public class NewsItemRecyclerAdapter extends RecyclerView.Adapter<NewsViewHolder
      * @param activity  The {@link Activity} in which the adapter operates. Used with the Glide
      *                  library for fine-tuning the image retrieval process.
      */
-    public NewsItemRecyclerAdapter(@NonNull ArrayList<NewsItem> newsItems,
+    public NewsItemRecyclerAdapter(Realm realm,
+                                   @NonNull RealmResults<NewsItem> newsItems,
                                    OnNewsItemActionListener listener,
-                                   Activity activity) {
-        mData = newsItems;
-        mListener = listener;
+                                   Activity activity,
+                                   boolean shouldLimitListSize) {
+        this(realm, newsItems, listener, shouldLimitListSize);
         mActivity = activity;
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        mData.addChangeListener(mRealmListener);
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        mRealm = null;
+        mData.removeChangeListener(mRealmListener);
+        mActivity = null;
+        mFragment = null;
     }
 
     @Override
@@ -95,7 +134,11 @@ public class NewsItemRecyclerAdapter extends RecyclerView.Adapter<NewsViewHolder
 
     @Override
     public int getItemCount() {
-        return mData.size();
+        if (mShouldLimitListSize) {
+            return NewsDatabaseController.getRealmResultsSize(mData);
+        } else {
+            return mData.size();
+        }
     }
 
     @Override
@@ -107,8 +150,8 @@ public class NewsItemRecyclerAdapter extends RecyclerView.Adapter<NewsViewHolder
     @Override
     public void onFavoriteClick(int position) {
         NewsItem newsItem = mData.get(position);
-        newsItem.setIsFavorite(!newsItem.isFavorite());
-        notifyItemChanged(position);
+        NewsDatabaseController.getInstance()
+                .toggleFavoriteWithTransaction(mRealm, newsItem.getTitle());
     }
 
 }

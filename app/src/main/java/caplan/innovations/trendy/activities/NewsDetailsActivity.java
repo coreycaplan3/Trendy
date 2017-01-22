@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -17,9 +18,12 @@ import com.bumptech.glide.Glide;
 import butterknife.BindDrawable;
 import butterknife.BindString;
 import butterknife.BindView;
+import butterknife.OnClick;
 import caplan.innovations.trendy.R;
 import caplan.innovations.trendy.application.TrendyApplication;
+import caplan.innovations.trendy.database.NewsDatabaseController;
 import caplan.innovations.trendy.model.NewsItem;
+import io.realm.RealmChangeListener;
 
 /**
  * Created by Corey Caplan on 1/20/17.
@@ -27,17 +31,20 @@ import caplan.innovations.trendy.model.NewsItem;
  * <p></p>
  * Purpose of Class: To display the details of our news item
  */
-public class NewsDetailsActivity extends BaseActivity {
+public class NewsDetailsActivity extends BaseActivity implements RealmChangeListener<NewsItem> {
 
     private static final String TAG = NewsDetailsActivity.class.getSimpleName();
 
-    private static final String KEY_NEWS = "NEWS";
+    private static final String KEY_NEWS_TITLE = "NEWS_TITLE";
 
     @BindDrawable(R.drawable.ic_cloud_off_black_48dp)
     Drawable mErrorDrawable;
 
     @BindString(R.string.full_article)
     String FULL_ARTICLE;
+
+    @BindView(R.id.floating_action_button)
+    FloatingActionButton mFloatingActionButton;
 
     @BindView(R.id.news_details_image)
     ImageView mNewsImageView;
@@ -54,15 +61,15 @@ public class NewsDetailsActivity extends BaseActivity {
     @BindView(R.id.news_details_url_text_view)
     TextView mNewsUrlTextView;
 
-    private NewsItem mNewsItem;
+    private String mNewsItemTitle;
 
     /**
-     * @param newsItem The {@link NewsItem} that should be shown in this activity
+     * @param newsItemTitle The title of the {@link NewsItem} that should be shown in this activity
      * @return An intent that can be used to start this activity.
      */
-    public static Intent createIntent(NewsItem newsItem) {
+    public static Intent createIntent(String newsItemTitle) {
         Intent intent = new Intent(TrendyApplication.context(), NewsDetailsActivity.class);
-        intent.putExtra(KEY_NEWS, newsItem);
+        intent.putExtra(KEY_NEWS_TITLE, newsItemTitle);
         return intent;
     }
 
@@ -71,15 +78,20 @@ public class NewsDetailsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
-            mNewsItem = savedInstanceState.getParcelable(KEY_NEWS);
+            mNewsItemTitle = savedInstanceState.getString(KEY_NEWS_TITLE);
         } else {
-            mNewsItem = getIntent().getParcelableExtra(KEY_NEWS);
+            mNewsItemTitle = getIntent().getStringExtra(KEY_NEWS_TITLE);
         }
 
         setupBackButton();
         // Register links so they are clickable
         mNewsUrlTextView.setMovementMethod(LinkMovementMethod.getInstance());
-        bindNewsItem();
+
+        NewsItem item = NewsDatabaseController.getInstance()
+                .getNewsByTitle(getRealm(), mNewsItemTitle);
+        item.addChangeListener(this);
+
+        bindNewsItem(item);
     }
 
     @Override
@@ -88,27 +100,27 @@ public class NewsDetailsActivity extends BaseActivity {
     }
 
     @SuppressWarnings("deprecation")
-    private void bindNewsItem() {
-        mNewsTitleTextView.setText(mNewsItem.getTitle());
+    private void bindNewsItem(NewsItem newsItem) {
+        mNewsTitleTextView.setText(newsItem.getTitle());
 
-        if (mNewsItem.getAuthor() != null) {
+        if (newsItem.getAuthor() != null) {
             mNewsAuthorTextView.setVisibility(View.VISIBLE);
-            mNewsAuthorTextView.setText(mNewsItem.getAuthor());
+            mNewsAuthorTextView.setText(newsItem.getAuthor());
         } else {
             mNewsAuthorTextView.setVisibility(View.GONE);
         }
 
-        if (mNewsItem.getDescription() != null) {
+        if (newsItem.getDescription() != null) {
             mNewsDescriptionTextView.setVisibility(View.VISIBLE);
-            mNewsDescriptionTextView.setText(mNewsItem.getDescription());
+            mNewsDescriptionTextView.setText(newsItem.getDescription());
         } else {
             mNewsDescriptionTextView.setVisibility(View.GONE);
         }
 
-        if (mNewsItem.getUrlToArticle() != null) {
+        if (newsItem.getUrlToArticle() != null) {
             mNewsUrlTextView.setVisibility(View.VISIBLE);
             Spanned html = Html.fromHtml(
-                    "<a href=\"" + mNewsItem.getUrlToArticle() + "\">" + FULL_ARTICLE + "</a>"
+                    "<a href=\"" + newsItem.getUrlToArticle() + "\">" + FULL_ARTICLE + "</a>"
             );
             mNewsUrlTextView.setText(html);
         } else {
@@ -118,9 +130,31 @@ public class NewsDetailsActivity extends BaseActivity {
         mErrorDrawable.setAlpha(68);
 
         Glide.with(this)
-                .load(mNewsItem.getImageUrl())
+                .load(newsItem.getImageUrl())
                 .error(mErrorDrawable)
                 .into(mNewsImageView);
+
+        bindFavorite(newsItem.isFavorite());
+    }
+
+    @Override
+    public void onChange(NewsItem element) {
+        Log.d(TAG, "onChange: Item changed, favorite: " + element.isFavorite());
+        bindFavorite(element.isFavorite());
+    }
+
+    private void bindFavorite(boolean isFavorite) {
+        if(isFavorite) {
+            mFloatingActionButton.setImageResource(R.drawable.ic_favorite_red_24dp);
+        } else {
+            mFloatingActionButton.setImageResource(R.drawable.ic_favorite_border_red_24dp);
+        }
+    }
+
+    @OnClick(R.id.floating_action_button)
+    public void onFavoriteButtonClick() {
+        NewsDatabaseController.getInstance()
+                .toggleFavoriteWithTransaction(getRealm(), mNewsItemTitle);
     }
 
     @Override
@@ -133,6 +167,7 @@ public class NewsDetailsActivity extends BaseActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putParcelable(KEY_NEWS, mNewsItem);
+        outState.putString(KEY_NEWS_TITLE, mNewsItemTitle);
     }
+
 }

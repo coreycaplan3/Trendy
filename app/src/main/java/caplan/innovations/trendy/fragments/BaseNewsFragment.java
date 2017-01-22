@@ -3,7 +3,6 @@ package caplan.innovations.trendy.fragments;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
@@ -15,15 +14,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import caplan.innovations.trendy.R;
 import caplan.innovations.trendy.activities.NewsDetailsActivity;
 import caplan.innovations.trendy.model.NewsItem;
-import caplan.innovations.trendy.network.NewsNetwork;
 import caplan.innovations.trendy.network.TrendyRequestQueue;
 import caplan.innovations.trendy.receivers.NewsBroadcastReceiver;
 import caplan.innovations.trendy.receivers.OnNewsItemsReceivedFromBroadcastListener;
@@ -31,6 +27,8 @@ import caplan.innovations.trendy.recyclers.NewsItemRecyclerAdapter;
 import caplan.innovations.trendy.recyclers.NewsItemRecyclerAdapter.OnNewsItemActionListener;
 import caplan.innovations.trendy.services.NewsIntentService;
 import caplan.innovations.trendy.utilities.UiUtility;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * Created by Corey Caplan on 1/21/17.
@@ -48,14 +46,16 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
-    private NewsItemRecyclerAdapter mAdapter;
-
-    @NonNull
-    private ArrayList<NewsItem> mNewsItems = new ArrayList<>();
-
     private NewsBroadcastReceiver mNewsBroadcastReceiver;
 
     private Unbinder mUnbinder;
+    private Realm mRealm;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mRealm = Realm.getDefaultInstance();
+    }
 
     @Nullable
     @Override
@@ -66,9 +66,14 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
 
         registerReceiver();
 
-        setupRecyclerView();
-        mSwipeRefreshLayout.setRefreshing(true);
-        onRefresh();
+        RealmResults<NewsItem> newsItems = getRealmResultsForAdapter(mRealm);
+        setupRecyclerView(newsItems);
+
+        if(newsItems.size() == 0) {
+            // We have nothing in the DB yet, so let's force load.
+            mSwipeRefreshLayout.setRefreshing(true);
+            onRefresh();
+        }
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
         return view;
@@ -82,30 +87,32 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
         broadcastManager.registerReceiver(mNewsBroadcastReceiver, filter);
     }
 
-    private void setupRecyclerView() {
+    private void setupRecyclerView(RealmResults<NewsItem> newsItems) {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(layoutManager);
+
         /* Pass "this" since BaseNewsFragment implements OnNewsItemActionListener */
-        mAdapter = new NewsItemRecyclerAdapter(mNewsItems, this, this);
-        mRecyclerView.setAdapter(mAdapter);
+        NewsItemRecyclerAdapter adapter =
+                new NewsItemRecyclerAdapter(mRealm, newsItems, this, this, true);
+        mRecyclerView.setAdapter(adapter);
     }
 
     @Override
     public void onNewsItemClick(NewsItem item) {
-        Intent intent = NewsDetailsActivity.createIntent(item);
+        Intent intent = NewsDetailsActivity.createIntent(item.getTitle());
         this.startActivity(intent);
     }
 
     @Override
     public void onRefresh() {
-        @NewsNetwork.NewsType int newsType = getNewsType();
+        @NewsItem.Type int newsType = getNewsType();
 
         /* Pass "this" since we implement the OnGetNewsCompleteListener interface */
         switch (newsType) {
-            case NewsNetwork.NEWS_GOOGLE:
+            case NewsItem.NEWS_GOOGLE:
                 NewsIntentService.getGoogleNews();
                 break;
-            case NewsNetwork.NEWS_BBC:
+            case NewsItem.NEWS_BBC:
                 NewsIntentService.getBbcNews();
                 break;
             default:
@@ -116,7 +123,7 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
     /**
      * @return The type of news that the given fragment should display
      */
-    @NewsNetwork.NewsType
+    @NewsItem.Type
     abstract int getNewsType();
 
     /**
@@ -125,10 +132,16 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
      */
     abstract String getNewsIntentFilter();
 
+    /**
+     * @return The data that should be used to back the adapter in the
+     * {@link NewsItemRecyclerAdapter}.
+     */
+    abstract RealmResults<NewsItem> getRealmResultsForAdapter(Realm realm);
+
     @Override
-    public void onNewsItemsReceivedFromBroadcast(@Nullable ArrayList<NewsItem> newsItems) {
+    public void onNewsItemsReceivedFromBroadcast(boolean isSuccessful) {
         mSwipeRefreshLayout.setRefreshing(false);
-        if (newsItems == null) {
+        if (!isSuccessful) {
             UiUtility.noConnectionSnackbar(getView(), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -136,11 +149,6 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
                     onRefresh();
                 }
             });
-        } else {
-            // Propagate the results to the adapter, to update the list
-            mNewsItems.clear();
-            mNewsItems.addAll(newsItems);
-            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -160,5 +168,9 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
     public void onDestroy() {
         super.onDestroy();
         TrendyRequestQueue.cancelAll();
+        if(!mRealm.isClosed()) {
+            mRealm.close();
+        }
+        mRealm = null;
     }
 }

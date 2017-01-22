@@ -20,6 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import caplan.innovations.trendy.R;
 import caplan.innovations.trendy.helpers.NavigationDrawerHelper;
+import io.realm.Realm;
 
 import static android.support.design.widget.AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL;
 
@@ -39,6 +40,8 @@ abstract class BaseActivity extends AppCompatActivity {
     @BindView(R.id.app_bar)
     AppBarLayout mAppBarLayout;
 
+    private Realm mRealm;
+
     private static final String KEY_PROGRESS_SHOWING = "PROGRESS_SHOWING";
     private static final String KEY_PROGRESS_TEXT = "PROGRESS_TEXT";
 
@@ -46,6 +49,8 @@ abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getContentView());
+
+        mRealm = Realm.getDefaultInstance();
 
         setupProgressDialog();
 
@@ -189,6 +194,21 @@ abstract class BaseActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putBoolean(KEY_PROGRESS_SHOWING, isProgressShowing);
         outState.putString(KEY_PROGRESS_TEXT, mProgressMessage);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(!mRealm.isClosed()) {
+            mRealm.close();
+        }
+        mRealm = null;
+    }
+
+//    MARK - Getters
+
+    Realm getRealm() {
+        return mRealm;
     }
 
 }

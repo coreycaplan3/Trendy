@@ -5,9 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
-import java.util.ArrayList;
-
-import caplan.innovations.trendy.model.NewsItem;
 import caplan.innovations.trendy.services.NewsIntentService;
 
 /**
@@ -33,12 +30,8 @@ public class NewsBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        ArrayList<NewsItem> newsItems = getNewsItemsFromIntent(intent);
-        mListener.onNewsItemsReceivedFromBroadcast(newsItems);
-    }
-
-    private static ArrayList<NewsItem> getNewsItemsFromIntent(Intent intent) {
-        return intent.getParcelableArrayListExtra(NewsIntentService.KEY_NEWS_ITEMS);
+        boolean isSuccessful = intent.getBooleanExtra(NewsIntentService.KEY_IS_NEWS_SUCCESSFUL, false);
+        mListener.onNewsItemsReceivedFromBroadcast(isSuccessful);
     }
 
 }

@@ -10,9 +10,12 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import caplan.innovations.trendy.R;
+import caplan.innovations.trendy.database.NewsDatabaseController;
 import caplan.innovations.trendy.model.NewsItem;
 import caplan.innovations.trendy.recyclers.NewsItemRecyclerAdapter;
 import caplan.innovations.trendy.recyclers.NewsItemRecyclerAdapter.OnNewsItemActionListener;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * Created by Corey Caplan on 1/21/17.
@@ -25,20 +28,18 @@ public class FavoritesActivity extends NavigationDrawerActivity implements OnNew
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
-    @SuppressWarnings("FieldCanBeLocal")
-    private NewsItemRecyclerAdapter mAdapter;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateTitle(R.string.favorites);
 
-        ArrayList<NewsItem> items = new ArrayList<>();
-        items.add(NewsItem.getDummy());
+        RealmResults<NewsItem> newsItems = NewsDatabaseController.getInstance()
+                .getFavorites(getRealm());
 
         /* Pass "this" since this activity implements OnNewsItemActionListener */
-        mAdapter = new NewsItemRecyclerAdapter(items, this, this);
-        mRecyclerView.setAdapter(mAdapter);
+        NewsItemRecyclerAdapter adapter =
+                new NewsItemRecyclerAdapter(getRealm(), newsItems, this, this, false);
+        mRecyclerView.setAdapter(adapter);
 
         LinearLayoutManager manager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(manager);
@@ -56,7 +57,7 @@ public class FavoritesActivity extends NavigationDrawerActivity implements OnNew
 
     @Override
     public void onNewsItemClick(NewsItem item) {
-        Intent intent = NewsDetailsActivity.createIntent(item);
+        Intent intent = NewsDetailsActivity.createIntent(item.getTitle());
         startActivity(intent);
     }
 
