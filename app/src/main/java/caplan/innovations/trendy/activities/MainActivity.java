@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.transition.Slide;
 
 import butterknife.BindView;
 import caplan.innovations.trendy.R;
@@ -42,6 +43,11 @@ public class MainActivity extends NavigationDrawerActivity {
 
         // #setupWithViewPager handles tab clicks and populating the tabs for us!
         mTabLayout.setupWithViewPager(mViewPager);
+
+        getWindow().setEnterTransition(new Slide());
+        getWindow().setExitTransition(new Slide());
+        getWindow().setReenterTransition(new Slide());
+        getWindow().setReturnTransition(new Slide());
     }
 
     @Override

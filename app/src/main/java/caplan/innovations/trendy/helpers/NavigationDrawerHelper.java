@@ -6,6 +6,7 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayout.DrawerListener;
@@ -83,10 +84,13 @@ public class NavigationDrawerHelper implements OnNavigationItemSelectedListener,
 
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onDrawerClosed(View drawerView) {
         if (mPendingIntent != null) {
-            mActivity.startActivity(mPendingIntent);
+            ActivityOptionsCompat optionsCompat =
+                    ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity);
+            mActivity.startActivity(mPendingIntent, optionsCompat.toBundle());
             mPendingIntent = null;
         }
     }

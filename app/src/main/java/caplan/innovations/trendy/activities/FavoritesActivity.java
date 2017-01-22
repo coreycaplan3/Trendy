@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
@@ -45,6 +48,11 @@ public class FavoritesActivity extends NavigationDrawerActivity implements OnNew
 
         LinearLayoutManager manager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(manager);
+
+        getWindow().setEnterTransition(new Slide());
+        getWindow().setExitTransition(new Slide());
+        getWindow().setReenterTransition(new Slide());
+        getWindow().setReturnTransition(new Slide());
     }
 
     @Override

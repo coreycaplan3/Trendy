@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.text.Html;
 import android.text.Spanned;
@@ -83,6 +84,10 @@ public class NewsDetailsActivity extends BaseActivity implements RealmChangeList
             mNewsItemTitle = getIntent().getStringExtra(KEY_NEWS_TITLE);
         }
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
         setupBackButton();
         // Register links so they are clickable
         mNewsUrlTextView.setMovementMethod(LinkMovementMethod.getInstance());
@@ -159,8 +164,15 @@ public class NewsDetailsActivity extends BaseActivity implements RealmChangeList
 
     @Override
     public boolean onSupportNavigateUp() {
-        finish();
-        return true;
+        ((CoordinatorLayout.LayoutParams) mFloatingActionButton.getLayoutParams())
+                .setAnchorId(View.NO_ID);
+        mFloatingActionButton.hide(new FloatingActionButton.OnVisibilityChangedListener() {
+            @Override
+            public void onHidden(FloatingActionButton fab) {
+                finishAfterTransition();
+            }
+        });
+        return false;
     }
 
     @Override
