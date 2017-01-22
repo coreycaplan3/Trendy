@@ -1,6 +1,7 @@
 package caplan.innovations.trendy.activities;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Html;
@@ -11,6 +12,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
+import butterknife.BindDrawable;
 import butterknife.BindString;
 import butterknife.BindView;
 import caplan.innovations.trendy.R;
@@ -28,6 +32,9 @@ public class NewsDetailsActivity extends BaseActivity {
     private static final String TAG = NewsDetailsActivity.class.getSimpleName();
 
     private static final String KEY_NEWS = "NEWS";
+
+    @BindDrawable(R.drawable.ic_cloud_off_black_48dp)
+    Drawable mErrorDrawable;
 
     @BindString(R.string.full_article)
     String FULL_ARTICLE;
@@ -108,7 +115,12 @@ public class NewsDetailsActivity extends BaseActivity {
             mNewsUrlTextView.setVisibility(View.GONE);
         }
 
-        //TODO get image from URL
+        mErrorDrawable.setAlpha(68);
+
+        Glide.with(this)
+                .load(mNewsItem.getImageUrl())
+                .error(mErrorDrawable)
+                .into(mNewsImageView);
     }
 
     @Override
