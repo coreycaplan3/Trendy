@@ -1,10 +1,12 @@
 package caplan.innovations.trendy.fragments;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,10 +24,12 @@ import caplan.innovations.trendy.R;
 import caplan.innovations.trendy.activities.NewsDetailsActivity;
 import caplan.innovations.trendy.model.NewsItem;
 import caplan.innovations.trendy.network.NewsNetwork;
-import caplan.innovations.trendy.network.OnGetNewsCompleteListener;
 import caplan.innovations.trendy.network.TrendyRequestQueue;
+import caplan.innovations.trendy.receivers.NewsBroadcastReceiver;
+import caplan.innovations.trendy.receivers.OnNewsItemsReceivedFromBroadcastListener;
 import caplan.innovations.trendy.recyclers.NewsItemRecyclerAdapter;
 import caplan.innovations.trendy.recyclers.NewsItemRecyclerAdapter.OnNewsItemActionListener;
+import caplan.innovations.trendy.services.NewsIntentService;
 import caplan.innovations.trendy.utilities.UiUtility;
 
 /**
@@ -36,7 +40,7 @@ import caplan.innovations.trendy.utilities.UiUtility;
  * getting/refreshing data
  */
 abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionListener,
-        OnRefreshListener, OnGetNewsCompleteListener {
+        OnRefreshListener, OnNewsItemsReceivedFromBroadcastListener {
 
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -49,6 +53,8 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
     @NonNull
     private ArrayList<NewsItem> mNewsItems = new ArrayList<>();
 
+    private NewsBroadcastReceiver mNewsBroadcastReceiver;
+
     private Unbinder mUnbinder;
 
     @Nullable
@@ -58,18 +64,30 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
         View view = inflater.inflate(R.layout.fragment_news, container, false);
         mUnbinder = ButterKnife.bind(this, view);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        mRecyclerView.setLayoutManager(layoutManager);
+        registerReceiver();
 
-        /* Pass "this" since BaseNewsFragment implements OnNewsItemActionListener */
-        mAdapter = new NewsItemRecyclerAdapter(mNewsItems, this, this);
-        mRecyclerView.setAdapter(mAdapter);
-
+        setupRecyclerView();
         mSwipeRefreshLayout.setRefreshing(true);
         onRefresh();
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
         return view;
+    }
+
+    private void registerReceiver() {
+        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(getContext());
+        /* Pass "this" since this fragment implements the required interface */
+        mNewsBroadcastReceiver = new NewsBroadcastReceiver(this);
+        IntentFilter filter = new IntentFilter(NewsBroadcastReceiver.INTENT_FILTER_ACTION);
+        broadcastManager.registerReceiver(mNewsBroadcastReceiver, filter);
+    }
+
+    private void setupRecyclerView() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        mRecyclerView.setLayoutManager(layoutManager);
+        /* Pass "this" since BaseNewsFragment implements OnNewsItemActionListener */
+        mAdapter = new NewsItemRecyclerAdapter(mNewsItems, this, this);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -85,10 +103,10 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
         /* Pass "this" since we implement the OnGetNewsCompleteListener interface */
         switch (newsType) {
             case NewsNetwork.NEWS_GOOGLE:
-                NewsNetwork.getGoogleNewsAsync(this);
+                NewsIntentService.getGoogleNews();
                 break;
             case NewsNetwork.NEWS_BBC:
-                NewsNetwork.getBbcNewsAsync(this);
+                NewsIntentService.getBbcNews();
                 break;
             default:
                 throw new IllegalArgumentException("Invalid new type, found: " + newsType);
@@ -102,7 +120,7 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
     abstract int getNewsType();
 
     @Override
-    public void onGetNewsComplete(@Nullable ArrayList<NewsItem> newsItems) {
+    public void onNewsItemsReceivedFromBroadcast(@Nullable ArrayList<NewsItem> newsItems) {
         mSwipeRefreshLayout.setRefreshing(false);
         if (newsItems == null) {
             UiUtility.noConnectionSnackbar(getView(), new View.OnClickListener() {
@@ -126,6 +144,10 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
         // The view will be destroyed so let's unbind the views from the fragment
         // http://jakewharton.github.io/butterknife/
         mUnbinder.unbind();
+
+        // Unregister the receiver
+        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(getContext());
+        broadcastManager.unregisterReceiver(mNewsBroadcastReceiver);
     }
 
     @Override

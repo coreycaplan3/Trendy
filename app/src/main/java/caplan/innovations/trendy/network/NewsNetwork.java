@@ -4,16 +4,16 @@ import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.android.volley.Response;
-import com.android.volley.Response.ErrorListener;
-import com.android.volley.Response.Listener;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.RequestFuture;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import caplan.innovations.trendy.R;
 import caplan.innovations.trendy.application.TrendyApplication;
@@ -30,6 +30,8 @@ import caplan.innovations.trendy.utilities.JsonExtractor;
 public class NewsNetwork {
 
     private static final String TAG = NewsNetwork.class.getSimpleName();
+
+    private static final int TIMEOUT_THIRTY_SECONDS = 30;
 
     private static final String BASE_URL = "https://newsapi.org/v1/articles";
     private static final String PARAM_API_KEY = "apiKey";
@@ -51,57 +53,59 @@ public class NewsNetwork {
     }
 
     /**
-     * Gets the news from BBC on a separate thread and reports the results back.
+     * Gets the news from BBC on this thread and blocks until it does so.
      *
-     * @param listener The {@link OnGetNewsCompleteListener} used to transfer the results back to
-     *                 the UI thread after completing
+     * @return The news items that the network retrieved or null if an error occurred.
+     * For simplicity's sake, we are not going to distinguish between the
+     * different types of errors. Some errors include loss of network connection,
+     * or invalid JSON being returned from the server.
      */
-    public static void getBbcNewsAsync(OnGetNewsCompleteListener listener) {
-        getNews(listener, NEWS_BBC);
+    @Nullable
+    public static ArrayList<NewsItem> getBbcNewsBlock() {
+        return getNews(NEWS_BBC);
     }
 
     /**
-     * Gets the news from Google on a separate thread and reports the results back.
+     * Gets the news from Google on this thread and blocks until it does so.
      *
-     * @param listener The {@link OnGetNewsCompleteListener} used to transfer the results back to
-     *                 the UI thread after completing
+     * @return The news items that the network retrieved or null if an error occurred.
+     * For simplicity's sake, we are not going to distinguish between the
+     * different types of errors. Some errors include loss of network connection,
+     * or invalid JSON being returned from the server.
      */
-    public static void getGoogleNewsAsync(OnGetNewsCompleteListener listener) {
-        getNews(listener, NEWS_GOOGLE);
+    public static ArrayList<NewsItem> getGoogleNewsAndBlock() {
+        return getNews( NEWS_GOOGLE);
     }
 
-    private static void getNews(final OnGetNewsCompleteListener listener, @NewsType int newsType) {
+    private static ArrayList<NewsItem> getNews(@NewsType int newsType) {
         String url = buildUrl(newsType);
-        Listener<JSONObject> successListener = new Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d(TAG, "onResponse: Received response: " + response.toString());
 
-                JSONArray jsonArray = new JsonExtractor(response)
-                        .getJsonArray(RESPONSE_ARTICLES);
-                if (jsonArray == null) {
-                    listener.onGetNewsComplete(null);
-                }
-
-                JsonDeserializer deserializer = new JsonDeserializer();
-                ArrayList<NewsItem> items =
-                        JsonDeserializer.getArrayFromJson(jsonArray, deserializer);
-
-                listener.onGetNewsComplete(items);
-            }
-        };
-
-        ErrorListener errorListener = new ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "onResponse: Received response: ", error);
-                listener.onGetNewsComplete(null);
-            }
-        };
-
+        RequestFuture<JSONObject> future = RequestFuture.newFuture();
         Log.d(TAG, "getNews: Sending a request to: " + url);
-        JsonObjectRequest request = new JsonObjectRequest(url, null, successListener, errorListener);
+        JsonObjectRequest request = new JsonObjectRequest(url, null, future, future);
         TrendyRequestQueue.addToRequestQueue(request);
+
+        try {
+            // Beware, this blocks this currently running thread until the result is retrieved.
+            JSONObject jsonObject = future.get(TIMEOUT_THIRTY_SECONDS, TimeUnit.SECONDS);
+
+            Log.d(TAG, "onResponse: Received response: " + jsonObject.toString());
+
+            JSONArray jsonArray = new JsonExtractor(jsonObject)
+                    .getJsonArray(RESPONSE_ARTICLES);
+            if (jsonArray == null) {
+                return null;
+            }
+
+            JsonDeserializer deserializer = new JsonDeserializer();
+            return JsonDeserializer.getArrayFromJson(jsonArray, deserializer);
+
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            Log.e(TAG, "getNews: ", e);
+
+            return null;
+        }
+
     }
 
     private static String buildUrl(@NewsType int newsType) {

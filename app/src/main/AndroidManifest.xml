@@ -25,6 +25,8 @@
 
         <activity android:name=".activities.FavoritesActivity" />
 
+        <service android:name=".services.NewsIntentService" />
+
     </application>
 
 </manifest>
