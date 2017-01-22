@@ -27,11 +27,7 @@ public class TrendyRequestQueue {
     private static TrendyRequestQueue sInstance;
 
     private static TrendyRequestQueue getInstance() {
-<<<<<<< HEAD
-        if (sInstance != null) {
-=======
         if (sInstance == null) {
->>>>>>> 3303384bb66fbc61ffdf2326b4ad6da6f29840d2
             sInstance = new TrendyRequestQueue();
         }
         return sInstance;
@@ -54,10 +50,7 @@ public class TrendyRequestQueue {
      *
      * @param request The {@link Request} that should be performed.
      */
-<<<<<<< HEAD
-=======
     @SuppressWarnings("WeakerAccess")
->>>>>>> 3303384bb66fbc61ffdf2326b4ad6da6f29840d2
     public static void addToRequestQueue(Request request) {
         getInstance().mRequestQueue.add(request);
     }
@@ -77,8 +70,4 @@ public class TrendyRequestQueue {
         getInstance().mRequestQueue.cancelAll(filter);
     }
 
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 3303384bb66fbc61ffdf2326b4ad6da6f29840d2
