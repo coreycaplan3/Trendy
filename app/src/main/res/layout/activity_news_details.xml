@@ -7,7 +7,31 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/app_bar" />
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|snap">
+
+            <ImageView
+                android:id="@+id/news_details_image"
+                android:layout_width="match_parent"
+                android:layout_height="196dp"
+                android:scaleType="fitXY"
+                android:transitionName="@string/transition_image"
+                tools:ignore="ContentDescription" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -18,13 +42,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/news_details_image"
-                android:layout_width="match_parent"
-                android:layout_height="196dp"
-                android:scaleType="fitXY"
-                tools:ignore="ContentDescription" />
 
             <!-- TITLE -->
             <TextView
