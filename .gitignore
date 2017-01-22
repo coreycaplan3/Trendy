@@ -33,9 +33,6 @@ proguard/
 gen-external-apklibs
 
 
-### Java ###
-*.class
-
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
@@ -52,16 +49,10 @@ hs_err_pid*
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio
 
 *.iml
-<<<<<<< HEAD
-.gradle
-/local.properties
 .idea
 .DS_Store
-/build
-=======
 
 ## Directory-based project format:
-.idea/
 # if you remove the above rule, at least ignore the following:
 
 # User-specific stuff:
@@ -91,7 +82,6 @@ hs_err_pid*
 
 # IntelliJ
 /out/
->>>>>>> c5af3ae65efbf7cc6027009a59e5e3f801002448
 /captures
 
 # mpeltonen/sbt-idea plugin
