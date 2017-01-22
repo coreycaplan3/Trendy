@@ -2,6 +2,7 @@ package caplan.innovations.trendy.recyclers;
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -37,9 +38,11 @@ class NewsViewHolder extends RecyclerView.ViewHolder {
         /**
          * Called when the base view holder is clicked
          *
-         * @param position The position at which the click occurred.
+         * @param position  The position at which the click occurred.
+         * @param imageView ImageView used for starting the details activity with a shared element
+         *                  transition.
          */
-        void onNewsClickInternal(int position);
+        void onNewsClickInternal(int position, ImageView imageView);
 
         /**
          * Called when the favorite button is clicked
@@ -111,7 +114,7 @@ class NewsViewHolder extends RecyclerView.ViewHolder {
     void onNewsItemClick() {
         // Use the adapter position to get the position of the click
         int position = getAdapterPosition();
-        mListenerInternal.onNewsClickInternal(position);
+        mListenerInternal.onNewsClickInternal(position, mImageView);
     }
 
     @OnClick(R.id.news_feed_favorite_button)

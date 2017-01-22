@@ -1,9 +1,11 @@
 package caplan.innovations.trendy.fragments;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -98,9 +101,12 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
     }
 
     @Override
-    public void onNewsItemClick(NewsItem item) {
+    public void onNewsItemClick(NewsItem item, ImageView imageView) {
         Intent intent = NewsDetailsActivity.createIntent(item.getTitle());
-        this.startActivity(intent);
+        String transitionName = getString(R.string.transition_image);
+        ActivityOptionsCompat optionsCompat =
+                ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), imageView, transitionName);
+        this.startActivity(intent, optionsCompat.toBundle());
     }
 
     @Override

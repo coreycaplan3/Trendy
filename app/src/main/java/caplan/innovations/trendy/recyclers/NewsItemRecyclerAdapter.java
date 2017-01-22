@@ -1,12 +1,14 @@
 package caplan.innovations.trendy.recyclers;
 
 import android.app.Activity;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import caplan.innovations.trendy.R;
 import caplan.innovations.trendy.database.NewsDatabaseController;
@@ -33,9 +35,11 @@ public class NewsItemRecyclerAdapter extends RecyclerView.Adapter<NewsViewHolder
         /**
          * Called when a news item is clicked
          *
-         * @param item The news item on which the user clicked.
+         * @param item      The news item on which the user clicked.
+         * @param imageView The ImageView used to start the details activity with a shared element
+         *                  transition.
          */
-        void onNewsItemClick(NewsItem item);
+        void onNewsItemClick(NewsItem item, ImageView imageView);
     }
 
     private Realm mRealm;
@@ -142,9 +146,9 @@ public class NewsItemRecyclerAdapter extends RecyclerView.Adapter<NewsViewHolder
     }
 
     @Override
-    public void onNewsClickInternal(int position) {
+    public void onNewsClickInternal(int position, ImageView imageView) {
         NewsItem newsItem = mData.get(position);
-        mListener.onNewsItemClick(newsItem);
+        mListener.onNewsItemClick(newsItem, imageView);
     }
 
     @Override

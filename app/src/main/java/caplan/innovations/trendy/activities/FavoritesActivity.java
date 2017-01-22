@@ -3,8 +3,10 @@ package caplan.innovations.trendy.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 
@@ -56,9 +58,12 @@ public class FavoritesActivity extends NavigationDrawerActivity implements OnNew
     }
 
     @Override
-    public void onNewsItemClick(NewsItem item) {
+    public void onNewsItemClick(NewsItem item, ImageView imageView) {
         Intent intent = NewsDetailsActivity.createIntent(item.getTitle());
-        startActivity(intent);
+        String transitionName = getString(R.string.transition_image);
+        ActivityOptionsCompat optionsCompat =
+                ActivityOptionsCompat.makeSceneTransitionAnimation(this, imageView, transitionName);
+        this.startActivity(intent, optionsCompat.toBundle());
     }
 
 }

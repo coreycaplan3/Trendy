@@ -15,21 +15,23 @@
         <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:contentScrim="@color/colorPrimary"
             app:layout_scrollFlags="scroll|snap">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <ImageView
                 android:id="@+id/news_details_image"
                 android:layout_width="match_parent"
-                android:layout_height="196dp"
+                android:layout_height="252dp"
                 android:scaleType="fitXY"
                 android:transitionName="@string/transition_image"
                 tools:ignore="ContentDescription" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
-
-        <android.support.v7.widget.Toolbar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
     </android.support.design.widget.AppBarLayout>
 
