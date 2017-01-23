@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Trendy</string>
 
-    <string name="news_api_key" translatable="false">3f58bbd8ef834166837b83241c2554ec</string>
+    <string name="news_api_key" translatable="false">API KEY GOES HERE</string>
 
     <!-- Verbs -->
     <string name="retry">Retry</string>
@@ -32,4 +32,5 @@
 
     <!-- Transition Names -->
     <string name="transition_image" translatable="false">transition_image</string>
+
 </resources>
