@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.transition.Slide;
 
 import butterknife.BindView;
 import caplan.innovations.trendy.R;
@@ -19,10 +18,7 @@ import caplan.innovations.trendy.fragments.BbcNewsFragment;
 import caplan.innovations.trendy.fragments.GoogleNewsFragment;
 
 /**
- * Created by Corey on 1/19/2017.
- * Project: Trendy
- * <p></p>
- * Purpose of Class: The main entry point for our application
+ * The main activity that is the entry-point for our app.
  */
 public class MainActivity extends NavigationDrawerActivity {
 

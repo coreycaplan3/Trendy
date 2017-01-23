@@ -16,14 +16,12 @@ import caplan.innovations.trendy.R;
 import caplan.innovations.trendy.application.TrendyApplication;
 
 /**
- * Created by Corey on 10/5/2015.
- * Project: MeetUp
- * Purpose of Class: To simplify and speed up the code necessary to do tedious stuff to the UI. Some
- * of the methods here are to help prevent the developer from calling essential methods in certain
+ * Designed to simplify and minimize the code necessary to do tedious stuff to the UI. Some of the
+ * methods here are to help prevent the developer from calling essential methods in certain
  * situations, which could lead to bugs. For example, forgetting to call <b>show</b> on a
  * {@link Toast} or {@link Snackbar} can be problematic.
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "WeakerAccess"})
 final public class UiUtility {
 
     private static int sScreenHeight = -1;
