@@ -3,19 +3,14 @@ package caplan.innovations.trendy.activities;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.widget.TextView;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import caplan.innovations.trendy.R;
 import caplan.innovations.trendy.model.NewsItem;
 
 /**
- * Created by Corey on 1/19/2017.
- * Project: Trendy
- * <p></p>
- * Purpose of Class: The main entry point for our application
+ * The main activity that is the entry-point for our app.
  */
 public class MainActivity extends BaseActivity {
 
