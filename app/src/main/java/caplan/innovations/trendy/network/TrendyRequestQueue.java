@@ -12,10 +12,8 @@ import java.io.File;
 import caplan.innovations.trendy.application.TrendyApplication;
 
 /**
- * Created by Corey on 1/21/2017.
- * Project: Trendy
- * <p></p>
- * Purpose of Class: To wrap the {@link RequestQueue} in a singleton.
+ * To wrap the {@link RequestQueue} in a singleton and perform any necessary network operations
+ * with volley.
  */
 public class TrendyRequestQueue {
 
@@ -27,7 +25,7 @@ public class TrendyRequestQueue {
     private static TrendyRequestQueue sInstance;
 
     private static TrendyRequestQueue getInstance() {
-        if (sInstance != null) {
+        if (sInstance == null) {
             sInstance = new TrendyRequestQueue();
         }
         return sInstance;
@@ -50,6 +48,7 @@ public class TrendyRequestQueue {
      *
      * @param request The {@link Request} that should be performed.
      */
+    @SuppressWarnings("WeakerAccess")
     public static void addToRequestQueue(Request request) {
         getInstance().mRequestQueue.add(request);
     }

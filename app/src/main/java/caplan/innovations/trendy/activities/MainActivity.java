@@ -7,10 +7,7 @@ import android.support.annotation.Nullable;
 import caplan.innovations.trendy.R;
 
 /**
- * Created by Corey on 1/19/2017.
- * Project: Trendy
- * <p></p>
- * Purpose of Class:
+ * The main activity that is the entry-point for our app.
  */
 public class MainActivity extends BaseActivity {
 
