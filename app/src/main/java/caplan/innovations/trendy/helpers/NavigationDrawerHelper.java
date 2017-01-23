@@ -45,7 +45,7 @@ public class NavigationDrawerHelper implements OnNavigationItemSelectedListener,
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        /** Pass "this" since we implement these interfaces */
+        /* Pass "this" since we implement these interfaces */
         navigationView.setNavigationItemSelectedListener(this);
         drawerLayout.addDrawerListener(this);
     }

@@ -44,10 +44,7 @@ public class MainActivity extends NavigationDrawerActivity {
         // #setupWithViewPager handles tab clicks and populating the tabs for us!
         mTabLayout.setupWithViewPager(mViewPager);
 
-        getWindow().setEnterTransition(new Slide());
-        getWindow().setExitTransition(new Slide());
-        getWindow().setReenterTransition(new Slide());
-        getWindow().setReturnTransition(new Slide());
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override

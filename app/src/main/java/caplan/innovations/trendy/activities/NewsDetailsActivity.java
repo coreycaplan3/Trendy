@@ -3,14 +3,18 @@ package caplan.innovations.trendy.activities;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.transition.Transition;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -82,6 +86,14 @@ public class NewsDetailsActivity extends BaseActivity implements RealmChangeList
             mNewsItemTitle = savedInstanceState.getString(KEY_NEWS_TITLE);
         } else {
             mNewsItemTitle = getIntent().getStringExtra(KEY_NEWS_TITLE);
+
+            // Animate the floating action button into view
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mFloatingActionButton.show();
+                }
+            }, 500);
         }
 
         if (getSupportActionBar() != null) {
@@ -149,7 +161,7 @@ public class NewsDetailsActivity extends BaseActivity implements RealmChangeList
     }
 
     private void bindFavorite(boolean isFavorite) {
-        if(isFavorite) {
+        if (isFavorite) {
             mFloatingActionButton.setImageResource(R.drawable.ic_favorite_red_24dp);
         } else {
             mFloatingActionButton.setImageResource(R.drawable.ic_favorite_border_red_24dp);

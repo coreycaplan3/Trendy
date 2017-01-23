@@ -49,10 +49,7 @@ public class FavoritesActivity extends NavigationDrawerActivity implements OnNew
         LinearLayoutManager manager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(manager);
 
-        getWindow().setEnterTransition(new Slide());
-        getWindow().setExitTransition(new Slide());
-        getWindow().setReenterTransition(new Slide());
-        getWindow().setReturnTransition(new Slide());
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override
