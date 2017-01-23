@@ -1,10 +1,7 @@
 package caplan.innovations.trendy.network;
 
-import android.support.annotation.IntDef;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.android.volley.Response;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
@@ -43,13 +40,6 @@ public class NewsNetwork {
     private static final String SOURCE_GOOGLE = "google-news";
     private static final String SOURCE_BBC = "bbc-news";
 
-    public static final int NEWS_GOOGLE = 1;
-    public static final int NEWS_BBC = 2;
-
-    @IntDef({NEWS_GOOGLE, NEWS_BBC})
-    public @interface NewsType {
-    }
-
     /**
      * Gets the news from BBC on a separate thread and reports the results back.
      *
@@ -57,7 +47,7 @@ public class NewsNetwork {
      *                 the UI thread after completing
      */
     public static void getBbcNewsAsync(OnGetNewsCompleteListener listener) {
-        getNews(listener, NEWS_BBC);
+        getNews(listener, NewsItem.NEWS_BBC);
     }
 
     /**
@@ -67,10 +57,10 @@ public class NewsNetwork {
      *                 the UI thread after completing
      */
     public static void getGoogleNewsAsync(OnGetNewsCompleteListener listener) {
-        getNews(listener, NEWS_GOOGLE);
+        getNews(listener, NewsItem.NEWS_GOOGLE);
     }
 
-    private static void getNews(final OnGetNewsCompleteListener listener, @NewsType int newsType) {
+    private static void getNews(final OnGetNewsCompleteListener listener, @NewsItem.NewsType int newsType) {
         String url = buildUrl(newsType);
         Listener<JSONObject> successListener = new Listener<JSONObject>() {
             @Override
@@ -104,14 +94,14 @@ public class NewsNetwork {
         TrendyRequestQueue.addToRequestQueue(request);
     }
 
-    private static String buildUrl(@NewsType int newsType) {
+    private static String buildUrl(@NewsItem.NewsType int newsType) {
         String apiKey = TrendyApplication.context().getString(R.string.news_api_key);
         String url = String.format("%s?%s=%s", BASE_URL, PARAM_API_KEY, apiKey);
         switch (newsType) {
-            case NEWS_GOOGLE:
+            case NewsItem.NEWS_GOOGLE:
                 url = String.format("%s&%s=%s", url, PARAM_SOURCE, SOURCE_GOOGLE);
                 break;
-            case NEWS_BBC:
+            case NewsItem.NEWS_BBC:
                 url = String.format("%s&%s=%s", url, PARAM_SOURCE, SOURCE_BBC);
                 break;
             default:

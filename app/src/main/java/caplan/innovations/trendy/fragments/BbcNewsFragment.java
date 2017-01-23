@@ -1,6 +1,6 @@
 package caplan.innovations.trendy.fragments;
 
-import caplan.innovations.trendy.network.NewsNetwork;
+import caplan.innovations.trendy.model.NewsItem;
 
 /**
  * Created by Corey Caplan on 1/21/17.
@@ -12,7 +12,7 @@ public class BbcNewsFragment extends BaseNewsFragment {
 
     @Override
     int getNewsType() {
-        return NewsNetwork.NEWS_BBC;
+        return NewsItem.NEWS_BBC;
     }
 
 }

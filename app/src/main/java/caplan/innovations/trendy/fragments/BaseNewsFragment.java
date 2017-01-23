@@ -80,14 +80,14 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
 
     @Override
     public void onRefresh() {
-        @NewsNetwork.NewsType int newsType = getNewsType();
+        @NewsItem.NewsType int newsType = getNewsType();
 
         /* Pass "this" since we implement the OnGetNewsCompleteListener interface */
         switch (newsType) {
-            case NewsNetwork.NEWS_GOOGLE:
+            case NewsItem.NEWS_GOOGLE:
                 NewsNetwork.getGoogleNewsAsync(this);
                 break;
-            case NewsNetwork.NEWS_BBC:
+            case NewsItem.NEWS_BBC:
                 NewsNetwork.getBbcNewsAsync(this);
                 break;
             default:
@@ -98,7 +98,7 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
     /**
      * @return The type of news that the given fragment should display
      */
-    @NewsNetwork.NewsType
+    @NewsItem.NewsType
     abstract int getNewsType();
 
     @Override
