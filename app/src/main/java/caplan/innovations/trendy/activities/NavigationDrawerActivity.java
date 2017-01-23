@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 
 import butterknife.BindView;
@@ -41,6 +42,16 @@ abstract class NavigationDrawerActivity extends BaseActivity {
      */
     @IdRes
     abstract int getSelectedNavigationMenuItem();
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        if(mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+            return false;
+        } else {
+            return super.onSupportNavigateUp();
+        }
+    }
 
     @Override
     protected void onDestroy() {
