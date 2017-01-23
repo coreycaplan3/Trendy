@@ -37,14 +37,14 @@ public class NewsIntentService extends IntentService {
     }
 
     public static void getGoogleNews() {
-        getNews(NewsNetwork.NEWS_GOOGLE);
+        getNews(NewsItem.NEWS_GOOGLE);
     }
 
     public static void getBbcNews() {
-        getNews(NewsNetwork.NEWS_BBC);
+        getNews(NewsItem.NEWS_BBC);
     }
 
-    private static void getNews(@NewsNetwork.NewsType int newsType) {
+    private static void getNews(@NewsItem.NewsType int newsType) {
         Intent intent = new Intent(TrendyApplication.context(), NewsIntentService.class);
         intent.putExtra(KEY_NEWS_TYPE, newsType);
         TrendyApplication.getInstance().startService(intent);
@@ -63,11 +63,11 @@ public class NewsIntentService extends IntentService {
 
         ArrayList<NewsItem> newsItems;
         switch (newsType) {
-            case NewsNetwork.NEWS_GOOGLE:
+            case NewsItem.NEWS_GOOGLE:
                 newsItems = NewsNetwork.getGoogleNewsAndBlock();
                 intent = new Intent(NewsBroadcastReceiver.INTENT_FILTER_GOOGLE_NEWS);
                 break;
-            case NewsNetwork.NEWS_BBC:
+            case NewsItem.NEWS_BBC:
                 newsItems = NewsNetwork.getBbcNewsBlock();
                 intent = new Intent(NewsBroadcastReceiver.INTENT_FILTER_BBC_NEWS);
                 break;

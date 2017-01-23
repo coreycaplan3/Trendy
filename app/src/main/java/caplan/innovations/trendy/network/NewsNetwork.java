@@ -1,6 +1,5 @@
 package caplan.innovations.trendy.network;
 
-import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -45,13 +44,6 @@ public class NewsNetwork {
     private static final String SOURCE_GOOGLE = "google-news";
     private static final String SOURCE_BBC = "bbc-news";
 
-    public static final int NEWS_GOOGLE = 1;
-    public static final int NEWS_BBC = 2;
-
-    @IntDef({NEWS_GOOGLE, NEWS_BBC})
-    public @interface NewsType {
-    }
-
     /**
      * Gets the news from BBC on this thread and blocks until it does so.
      *
@@ -62,7 +54,7 @@ public class NewsNetwork {
      */
     @Nullable
     public static ArrayList<NewsItem> getBbcNewsBlock() {
-        return getNews(NEWS_BBC);
+        return getNews(NewsItem.NEWS_BBC);
     }
 
     /**
@@ -74,10 +66,10 @@ public class NewsNetwork {
      * or invalid JSON being returned from the server.
      */
     public static ArrayList<NewsItem> getGoogleNewsAndBlock() {
-        return getNews( NEWS_GOOGLE);
+        return getNews(NewsItem.NEWS_GOOGLE);
     }
 
-    private static ArrayList<NewsItem> getNews(@NewsType int newsType) {
+    private static ArrayList<NewsItem> getNews(@NewsItem.NewsType int newsType) {
         String url = buildUrl(newsType);
 
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
@@ -108,14 +100,14 @@ public class NewsNetwork {
 
     }
 
-    private static String buildUrl(@NewsType int newsType) {
+    private static String buildUrl(@NewsItem.NewsType int newsType) {
         String apiKey = TrendyApplication.context().getString(R.string.news_api_key);
         String url = String.format("%s?%s=%s", BASE_URL, PARAM_API_KEY, apiKey);
         switch (newsType) {
-            case NEWS_GOOGLE:
+            case NewsItem.NEWS_GOOGLE:
                 url = String.format("%s&%s=%s", url, PARAM_SOURCE, SOURCE_GOOGLE);
                 break;
-            case NEWS_BBC:
+            case NewsItem.NEWS_BBC:
                 url = String.format("%s&%s=%s", url, PARAM_SOURCE, SOURCE_BBC);
                 break;
             default:

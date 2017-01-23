@@ -2,6 +2,7 @@ package caplan.innovations.trendy.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 
 import org.json.JSONObject;
@@ -17,6 +18,13 @@ import caplan.innovations.trendy.utilities.JsonExtractor;
  * Purpose of Class: To represent a simple news item in our app.
  */
 public class NewsItem implements Parcelable {
+
+    @IntDef({NEWS_GOOGLE, NEWS_BBC})
+    public @interface NewsType {
+    }
+
+    public static final int NEWS_GOOGLE = 1;
+    public static final int NEWS_BBC = 2;
 
     private final String mTitle;
     @Nullable
