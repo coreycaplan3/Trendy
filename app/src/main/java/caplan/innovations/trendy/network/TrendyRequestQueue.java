@@ -12,10 +12,8 @@ import java.io.File;
 import caplan.innovations.trendy.application.TrendyApplication;
 
 /**
- * Created by Corey on 1/21/2017.
- * Project: Trendy
- * <p></p>
- * Purpose of Class: To wrap the {@link RequestQueue} in a singleton.
+ * To wrap the {@link RequestQueue} in a singleton and perform any necessary network operations
+ * with volley.
  */
 public class TrendyRequestQueue {
 

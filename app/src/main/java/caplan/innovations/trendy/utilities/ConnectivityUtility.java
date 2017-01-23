@@ -7,12 +7,10 @@ import android.net.NetworkInfo;
 import caplan.innovations.trendy.application.TrendyApplication;
 
 /**
- * Created by Corey on 5/7/2016.
- * Project: MeetUp
- * <p></p>
- * Purpose of Class: To easily check different connection types such as GPS settings and  regular
+ * To easily check different connection types such as GPS settings and  regular
  * device connectivity.
  */
+@SuppressWarnings("unused")
 public final class ConnectivityUtility {
 
     private ConnectivityUtility() {
