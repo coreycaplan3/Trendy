@@ -36,7 +36,7 @@
             android:layout_marginLeft="@dimen/standard_padding"
             android:layout_marginRight="@dimen/standard_padding"
             android:layout_marginTop="@dimen/standard_padding_small"
-            android:text="@string/default_author"
+            android:text="@string/default_news_author"
             android:textSize="14sp" />
 
     </LinearLayout>
