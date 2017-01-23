@@ -3,13 +3,10 @@ package caplan.innovations.trendy.activities;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,7 +16,6 @@ import android.view.View;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import caplan.innovations.trendy.R;
-import caplan.innovations.trendy.helpers.NavigationDrawerHelper;
 import io.realm.Realm;
 
 import static android.support.design.widget.AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL;
@@ -78,6 +74,17 @@ abstract class BaseActivity extends AppCompatActivity {
         };
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
+
+        if (savedInstanceState != null) {
+            progressDialog.setMessage(savedInstanceState.getString(KEY_PROGRESS_TEXT));
+            if (savedInstanceState.getBoolean(KEY_PROGRESS_SHOWING)) {
+                progressDialog.show();
+            }
+        }
+
+        // Setup the views for the activity
+        ButterKnife.bind(this);
+        setSupportActionBar(mToolbar);
     }
 
     @Override
