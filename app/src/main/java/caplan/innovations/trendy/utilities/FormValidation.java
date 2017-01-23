@@ -8,12 +8,10 @@ import caplan.innovations.trendy.R;
 import caplan.innovations.trendy.application.TrendyApplication;
 
 /**
- * Created by Corey on 1/21/2016.
- * Project: MeetUp
- * <p></p>
- * Purpose of Class: A utility class that contains methods for ensuring a form was entered properly
+ * A utility class that contains methods for ensuring a form was entered properly
  * by the user.
  */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public final class FormValidation {
 
     private FormValidation() {

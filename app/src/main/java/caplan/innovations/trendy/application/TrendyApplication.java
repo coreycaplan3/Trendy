@@ -3,11 +3,11 @@ package caplan.innovations.trendy.application;
 import android.app.Application;
 import android.content.Context;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+
 /**
- * Created by Corey on 1/19/2017.
- * Project: Trendy
- * <p></p>
- * Purpose of Class:
+ * The global application class. Used mainly get static access to the application {@link Context}
  */
 public class TrendyApplication extends Application {
 
@@ -17,6 +17,7 @@ public class TrendyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         sApplication = this;
+        Realm.init(this);
     }
 
     /**
