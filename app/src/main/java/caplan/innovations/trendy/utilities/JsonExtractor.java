@@ -6,12 +6,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * Created by Corey Caplan on 10/17/16.
- * Project: android
- * <p></p>
- * Purpose of Class: The ease the process and minimize the code necessary to extract JSON, using the
+ * The ease the process and minimize the code necessary to extract JSON, using the
  * Volley Library's JSON parser.
  */
+@SuppressWarnings("unused")
 public final class JsonExtractor {
 
     private JSONObject mJsonObject;
