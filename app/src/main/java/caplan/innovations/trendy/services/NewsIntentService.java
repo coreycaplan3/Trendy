@@ -46,7 +46,7 @@ public class NewsIntentService extends IntentService {
         getNews(NewsItem.NEWS_BBC);
     }
 
-    private static void getNews(@NewsItem.Type int newsType) {
+    private static void getNews(@NewsItem.NewsType int newsType) {
         Intent intent = new Intent(TrendyApplication.context(), NewsIntentService.class);
         intent.putExtra(KEY_NEWS_TYPE, newsType);
         TrendyApplication.getInstance().startService(intent);
@@ -58,7 +58,7 @@ public class NewsIntentService extends IntentService {
             return;
         }
 
-        @NewsItem.Type
+        @NewsItem.NewsType
         int newsType = intent.getIntExtra(KEY_NEWS_TYPE, -1);
         //noinspection WrongConstant
         if (newsType == -1) {

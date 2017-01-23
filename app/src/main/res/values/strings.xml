@@ -32,5 +32,4 @@
 
     <!-- Transition Names -->
     <string name="transition_image" translatable="false">transition_image</string>
-
 </resources>

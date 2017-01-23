@@ -110,7 +110,9 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
 
     @Override
     public void onRefresh() {
-        @NewsItem.Type int newsType = getNewsType();
+        @NewsItem.NewsType int newsType = getNewsType();
+
+        /* Pass "this" since we implement the OnGetNewsCompleteListener interface */
         switch (newsType) {
             case NewsItem.NEWS_GOOGLE:
                 NewsIntentService.getGoogleNews();
@@ -126,7 +128,7 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
     /**
      * @return The type of news that the given fragment should display
      */
-    @NewsItem.Type
+    @NewsItem.NewsType
     abstract int getNewsType();
 
     /**
@@ -170,7 +172,6 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
     @Override
     public void onDestroy() {
         super.onDestroy();
-        TrendyRequestQueue.cancelAll();
         if(!mRealm.isClosed()) {
             mRealm.close();
         }

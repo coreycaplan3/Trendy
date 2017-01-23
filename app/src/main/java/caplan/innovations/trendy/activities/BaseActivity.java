@@ -75,13 +75,6 @@ abstract class BaseActivity extends AppCompatActivity {
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
 
-        if (savedInstanceState != null) {
-            progressDialog.setMessage(savedInstanceState.getString(KEY_PROGRESS_TEXT));
-            if (savedInstanceState.getBoolean(KEY_PROGRESS_SHOWING)) {
-                progressDialog.show();
-            }
-        }
-
         // Setup the views for the activity
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);

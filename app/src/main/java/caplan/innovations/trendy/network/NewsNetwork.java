@@ -71,7 +71,7 @@ public class NewsNetwork {
     }
 
     @Nullable
-    private static JSONArray getNews(@NewsItem.Type int newsType) {
+    private static JSONArray getNews(@NewsItem.NewsType int newsType) {
         String url = buildUrl(newsType);
 
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
@@ -104,7 +104,7 @@ public class NewsNetwork {
 
     }
 
-    private static String buildUrl(@NewsItem.Type int newsType) {
+    private static String buildUrl(@NewsItem.NewsType int newsType) {
         String apiKey = TrendyApplication.context().getString(R.string.news_api_key);
         String url = String.format("%s?%s=%s", BASE_URL, PARAM_API_KEY, apiKey);
         switch (newsType) {
