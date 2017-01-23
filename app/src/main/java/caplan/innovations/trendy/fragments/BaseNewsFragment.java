@@ -1,6 +1,5 @@
 package caplan.innovations.trendy.fragments;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -112,8 +111,6 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
     @Override
     public void onRefresh() {
         @NewsItem.Type int newsType = getNewsType();
-
-        /* Pass "this" since we implement the OnGetNewsCompleteListener interface */
         switch (newsType) {
             case NewsItem.NEWS_GOOGLE:
                 NewsIntentService.getGoogleNews();

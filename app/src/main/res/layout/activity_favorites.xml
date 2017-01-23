@@ -25,6 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:layout_marginTop="?actionBarSize"
         app:menu="@menu/navigation_drawer" />
 
 </android.support.v4.widget.DrawerLayout>
