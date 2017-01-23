@@ -64,7 +64,7 @@ public class NewsDatabaseController {
 
     public void insertNewsWithTransaction(Realm realm,
                                           final JSONArray newsItemsJsonArrayFromNetwork,
-                                          final @NewsItem.Type int newsType) {
+                                          final @NewsItem.NewsType int newsType) {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {

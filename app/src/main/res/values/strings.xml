@@ -32,14 +32,4 @@
 
     <!-- Transition Names -->
     <string name="transition_image" translatable="false">transition_image</string>
-    <string name="default_news_author">Corey Caplan</string>
-    <string name="default_news_description">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque finibus, felis vel vestibulum bibendum, sem elit faucibus enim, sit amet mattis arcu metus quis augue. Duis purus ipsum, eleifend at auctor sed, venenatis ut tellus. Integer malesuada, ligula at laoreet tincidunt, sem augue convallis enim, et porta mauris felis a lectus. Duis feugiat bibendum augue nec mattis. Morbi lobortis nunc nunc, ut convallis mi pellentesque a. Phasellus nisl urna, lacinia sit amet justo vel, aliquam feugiat mauris. Sed sit amet bibendum nisl.
-
-        Donec eu quam vel erat pretium convallis. Vivamus consequat eleifend arcu id lobortis. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aliquam erat volutpat. Proin laoreet, dui vitae placerat tincidunt, dolor tortor pharetra lorem, sit amet consectetur dolor magna et eros. Aenean convallis massa quis diam posuere, sed pretium metus pellentesque. Etiam efficitur consectetur mi ut finibus.
-
-        Ut porta, turpis quis commodo tincidunt, orci nisi feugiat est, sed tempor sapien eros ut ante. Sed aliquam pulvinar ante, ac pulvinar quam scelerisque vel. Suspendisse blandit sem sit amet egestas maximus. Integer commodo condimentum pharetra. Sed pellentesque nibh congue, lacinia ligula posuere, egestas tortor. Phasellus mi lectus, pretium vitae diam vel, mattis molestie dui. Maecenas vel nulla et urna interdum porta. Duis a pulvinar massa. Proin eu felis pretium, iaculis diam id, mattis diam. Cras sit amet metus erat.
-    </string>
-    <string name="full_article">Full Article</string>
-
 </resources>

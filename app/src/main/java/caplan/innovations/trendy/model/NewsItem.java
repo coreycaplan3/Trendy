@@ -1,6 +1,8 @@
 package caplan.innovations.trendy.model;
 
 import android.support.annotation.IntDef;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -18,17 +20,17 @@ import io.realm.annotations.PrimaryKey;
  */
 public class NewsItem extends RealmObject {
 
+    @IntDef({NEWS_GOOGLE, NEWS_BBC})
+    public @interface NewsType {
+    }
+
     public static final int NEWS_GOOGLE = 1;
     public static final int NEWS_BBC = 2;
-
-    @IntDef({NEWS_GOOGLE, NEWS_BBC})
-    public @interface Type {
-    }
 
     @PrimaryKey
     private String mTitle;
 
-    @Type
+    @NewsType
     private int mNewsType;
 
     private long mDate;
@@ -54,7 +56,7 @@ public class NewsItem extends RealmObject {
     public NewsItem() {
     }
 
-    private NewsItem(String title, @Type int newsType, long date, @Nullable String author,
+    private NewsItem(String title, @NewsType int newsType, long date, @Nullable String author,
                      @Nullable String urlToArticle, @Nullable String description,
                      @Nullable String imageUrl, boolean isFavorite) {
         mTitle = title;
@@ -72,7 +74,7 @@ public class NewsItem extends RealmObject {
     }
 
     @SuppressWarnings("unused")
-    @Type
+    @NewsType
     public int getNewsType() {
         return mNewsType;
     }
@@ -163,10 +165,10 @@ public class NewsItem extends RealmObject {
 
         private static final String TAG = JsonDeserializer.class.getSimpleName();
 
-        @Type
+        @NewsType
         private int mNewsType;
 
-        public JsonDeserializer(@Type int newsType) {
+        public JsonDeserializer(@NewsType int newsType) {
             mNewsType = newsType;
         }
 
