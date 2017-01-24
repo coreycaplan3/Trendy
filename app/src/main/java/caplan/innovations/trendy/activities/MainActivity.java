@@ -42,6 +42,7 @@ public class MainActivity extends NavigationDrawerActivity {
 
         // #setupWithViewPager handles tab clicks and populating the tabs for us!
         mTabLayout.setupWithViewPager(mViewPager);
+
     }
 
     @Override

@@ -41,6 +41,7 @@
 
     </android.support.design.widget.CoordinatorLayout>
 
+    <!-- Navigation Drawer -->
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation_view"
         android:layout_gravity="start"

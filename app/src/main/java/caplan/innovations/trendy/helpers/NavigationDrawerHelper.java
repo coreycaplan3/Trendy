@@ -44,7 +44,7 @@ public class NavigationDrawerHelper implements OnNavigationItemSelectedListener,
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        /** Pass "this" since we implement these interfaces */
+        /* Pass "this" since we implement these interfaces */
         navigationView.setNavigationItemSelectedListener(this);
         drawerLayout.addDrawerListener(this);
     }
@@ -54,6 +54,7 @@ public class NavigationDrawerHelper implements OnNavigationItemSelectedListener,
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         if (item.isChecked()) {
+            // The user reselected the current item, so we'll do nothing
             mDrawerLayout.closeDrawer(GravityCompat.START);
             return true;
         }
@@ -74,6 +75,14 @@ public class NavigationDrawerHelper implements OnNavigationItemSelectedListener,
     }
 
     @Override
+    public void onDrawerClosed(View drawerView) {
+        if (mPendingIntent != null) {
+            mActivity.startActivity(mPendingIntent);
+            mPendingIntent = null;
+        }
+    }
+
+    @Override
     public void onDrawerSlide(View drawerView, float slideOffset) {
 
     }
@@ -81,14 +90,6 @@ public class NavigationDrawerHelper implements OnNavigationItemSelectedListener,
     @Override
     public void onDrawerOpened(View drawerView) {
 
-    }
-
-    @Override
-    public void onDrawerClosed(View drawerView) {
-        if (mPendingIntent != null) {
-            mActivity.startActivity(mPendingIntent);
-            mPendingIntent = null;
-        }
     }
 
     @Override
