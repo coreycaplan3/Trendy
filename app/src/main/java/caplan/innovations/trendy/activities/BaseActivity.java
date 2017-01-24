@@ -3,13 +3,10 @@ package caplan.innovations.trendy.activities;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,7 +16,7 @@ import android.view.View;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import caplan.innovations.trendy.R;
-import caplan.innovations.trendy.helpers.NavigationDrawerHelper;
+import io.realm.Realm;
 
 import static android.support.design.widget.AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL;
 
@@ -27,7 +24,7 @@ import static android.support.design.widget.AppBarLayout.LayoutParams.SCROLL_FLA
  * A base class of {@link AppCompatActivity} used to do a standardized setup that should be
  * universal amongst all activities.
  */
-public abstract class BaseActivity extends AppCompatActivity {
+abstract class BaseActivity extends AppCompatActivity {
 
     private static final String TAG = BaseActivity.class.getSimpleName();
 
@@ -39,6 +36,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     @BindView(R.id.app_bar)
     AppBarLayout mAppBarLayout;
 
+    private Realm mRealm;
+
     private static final String KEY_PROGRESS_SHOWING = "PROGRESS_SHOWING";
     private static final String KEY_PROGRESS_TEXT = "PROGRESS_TEXT";
 
@@ -46,6 +45,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getContentView());
+
+        mRealm = Realm.getDefaultInstance();
 
         setupProgressDialog();
 
@@ -73,6 +74,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         };
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
+
+        // Setup the views for the activity
+        ButterKnife.bind(this);
+        setSupportActionBar(mToolbar);
     }
 
     @Override
@@ -189,6 +194,21 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putBoolean(KEY_PROGRESS_SHOWING, isProgressShowing);
         outState.putString(KEY_PROGRESS_TEXT, mProgressMessage);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(!mRealm.isClosed()) {
+            mRealm.close();
+        }
+        mRealm = null;
+    }
+
+//    MARK - Getters
+
+    Realm getRealm() {
+        return mRealm;
     }
 
 }

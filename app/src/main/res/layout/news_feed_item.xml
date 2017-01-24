@@ -54,7 +54,7 @@
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/standard_padding_small"
             android:background="?android:attr/selectableItemBackground"
-            android:src="@drawable/ic_favorite_black_24dp"
+            android:src="@drawable/ic_favorite_red_24dp"
             tools:ignore="ContentDescription" />
 
     </LinearLayout>
