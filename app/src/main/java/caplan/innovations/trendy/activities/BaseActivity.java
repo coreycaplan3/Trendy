@@ -16,6 +16,7 @@ import android.view.View;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import caplan.innovations.trendy.R;
+import io.realm.Realm;
 
 import static android.support.design.widget.AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL;
 
@@ -23,7 +24,7 @@ import static android.support.design.widget.AppBarLayout.LayoutParams.SCROLL_FLA
  * A base class of {@link AppCompatActivity} used to do a standardized setup that should be
  * universal amongst all activities.
  */
-public abstract class BaseActivity extends AppCompatActivity {
+abstract class BaseActivity extends AppCompatActivity {
 
     private static final String TAG = BaseActivity.class.getSimpleName();
 
@@ -32,8 +33,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @BindView(R.id.appbar)
+    @BindView(R.id.app_bar)
     AppBarLayout mAppBarLayout;
+
+    private Realm mRealm;
 
     private static final String KEY_PROGRESS_SHOWING = "PROGRESS_SHOWING";
     private static final String KEY_PROGRESS_TEXT = "PROGRESS_TEXT";
@@ -43,17 +46,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(getContentView());
 
-        progressDialog = new ProgressDialog(this) {
-            @Override
-            public void setMessage(CharSequence message) {
-                super.setMessage(message);
-                // Cache the value of message since the progress dialog doesn't have a getter for
-                // the message field.
-                mProgressMessage = (String) message;
-            }
-        };
-        progressDialog.setIndeterminate(true);
-        progressDialog.setCancelable(false);
+        mRealm = Realm.getDefaultInstance();
+
+        setupProgressDialog();
 
         if (savedInstanceState != null) {
             progressDialog.setMessage(savedInstanceState.getString(KEY_PROGRESS_TEXT));
@@ -65,6 +60,20 @@ public abstract class BaseActivity extends AppCompatActivity {
         // Setup the views for the activity
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
+    }
+
+    private void setupProgressDialog() {
+        progressDialog = new ProgressDialog(this) {
+            @Override
+            public void setMessage(CharSequence message) {
+                super.setMessage(message);
+                // Cache the value of message since the progress dialog doesn't have a getter for
+                // the message field.
+                mProgressMessage = (String) message;
+            }
+        };
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
     }
 
     @Override
@@ -103,6 +112,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_HOME);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        getWindow().setEnterTransition(null);
+        getWindow().setExitTransition(null);
+        getWindow().setReturnTransition(null);
+        getWindow().setReenterTransition(null);
+
         startActivity(intent);
         return false;
     }
@@ -181,8 +196,21 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putBoolean(KEY_PROGRESS_SHOWING, isProgressShowing);
         outState.putString(KEY_PROGRESS_TEXT, mProgressMessage);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(!mRealm.isClosed()) {
+            mRealm.close();
+        }
+        mRealm = null;
+    }
 
+//    MARK - Getters
+
+    Realm getRealm() {
+        return mRealm;
     }
 
 }

@@ -6,23 +6,17 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import caplan.innovations.trendy.R;
 import caplan.innovations.trendy.model.NewsItem;
 import caplan.innovations.trendy.recyclers.NewsItemRecyclerAdapter;
 import caplan.innovations.trendy.recyclers.NewsItemRecyclerAdapter.OnNewsItemActionListener;
 
 /**
- * Created by Corey on 1/19/2017.
- * Project: Trendy
- * <p></p>
- * Purpose of Class: The main entry point for our application
+ * The main activity that is the entry-point for our app.
  */
 public class MainActivity extends BaseActivity implements OnNewsItemActionListener {
 
@@ -43,11 +37,11 @@ public class MainActivity extends BaseActivity implements OnNewsItemActionListen
             items.add(NewsItem.getDummy());
         }
 
-        /** Pass "this" since Activity is an instance of Context */
+        /* Pass "this" since Activity is an instance of Context */
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        /** Pass "this" since Activity implements OnNewsItemActionListener */
+        /* Pass "this" since Activity implements OnNewsItemActionListener */
         mAdapter = new NewsItemRecyclerAdapter(items, this);
         mRecyclerView.setAdapter(mAdapter);
     }
