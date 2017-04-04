@@ -53,7 +53,7 @@ abstract class BaseNewsFragment extends Fragment implements OnNewsItemActionList
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(layoutManager);
 
-        /** Pass "this" since BaseNewsFragment implements OnNewsItemActionListener */
+        /* Pass "this" since BaseNewsFragment implements OnNewsItemActionListener */
         mAdapter = new NewsItemRecyclerAdapter(items, this);
         mRecyclerView.setAdapter(mAdapter);
         return view;
